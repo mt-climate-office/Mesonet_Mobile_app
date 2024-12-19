@@ -54,7 +54,9 @@ class _HydroStationPageState extends State<HydroStationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.station.name),
+        title: Text(widget.station.name,
+        style: TextStyle(fontWeight: FontWeight.w800,
+        color: Colors.white),),
         centerTitle: true,
         backgroundColor: (widget.station.subNetwork == 'HydroMet') ?Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary,
       ),

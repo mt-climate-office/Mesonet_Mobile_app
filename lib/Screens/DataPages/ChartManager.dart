@@ -68,7 +68,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     List<Widget> checklist = [];
 
     checklist.add(ListTile(
-      leading: Text('${f.format(_selectedDateRange!.start)} - ${f.format(_selectedDateRange!.end)}'),
+      leading: Text('${f.format(_selectedDateRange!.start)} - ${f.format(_selectedDateRange!.end)}',
+      style: TextStyle(fontWeight: FontWeight.w800),
+      ),
       trailing: MaterialButton(
         color: Theme.of(context).colorScheme.primary,
         onPressed: _show,
