@@ -54,6 +54,20 @@ class _ChartmanagerState extends State<Chartmanager> {
 
       getDataList();
   }
+
+  Future<List<FlSpot>> dataSpot() async{
+    List<FlSpot> airTemperatureSpotList = [];
+
+    List<Data> data = await getDataList();
+
+    //this ignores null checks. also really slow. Fix
+    for (int i = 0; i<data.length;i++){
+      airTemperatureSpotList.add(FlSpot(data[i].datetime! as double, data[i].airTemperature!));
+    }
+
+    print(airTemperatureSpotList.length);
+    return airTemperatureSpotList;
+  }
 //shows the datepicker
   void _show() async {
     final DateTimeRange? result = await showDateRangePicker(
@@ -274,8 +288,24 @@ class _ChartmanagerState extends State<Chartmanager> {
         ),
         //Call charts from list above
         body: ListView(
+          scrollDirection: Axis.vertical,
           children: [
-
+            FutureBuilder(
+              future: dataSpot(),
+              builder: (context,snapshot){
+                if(!snapshot.hasData){
+                  return CircularProgressIndicator();
+                } else {
+                  return LineChart(
+                LineChartData(
+                  lineBarsData: [LineChartBarData(
+                    spots: snapshot.data!,
+                  )]
+                )
+              );
+                }
+              },
+            )
           ],),
     );
   }
