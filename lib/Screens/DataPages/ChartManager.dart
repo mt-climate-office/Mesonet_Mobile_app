@@ -60,12 +60,19 @@ class _ChartmanagerState extends State<Chartmanager> {
 
     List<Data> data = await getDataList();
 
+    print("start");
     //this ignores null checks. also really slow. Fix
     for (int i = 0; i<data.length;i++){
-      airTemperatureSpotList.add(FlSpot(data[i].datetime! as double, data[i].airTemperature!));
+      print(i);
+      int x = data[i].datetime ?? 0;
+      double y = data[i].airTemperature ?? 0;
+        airTemperatureSpotList.add(FlSpot(x.toDouble(), y));
+      
+      print("End of for loop");
     }
 
-    print(airTemperatureSpotList.length);
+    //never gets here yet
+    print("end");
     return airTemperatureSpotList;
   }
 //shows the datepicker
@@ -287,26 +294,31 @@ class _ChartmanagerState extends State<Chartmanager> {
           ),
         ),
         //Call charts from list above
-        body: ListView(
-          scrollDirection: Axis.vertical,
-          children: [
-            FutureBuilder(
-              future: dataSpot(),
-              builder: (context,snapshot){
-                if(!snapshot.hasData){
-                  return CircularProgressIndicator();
-                } else {
-                  return LineChart(
-                LineChartData(
-                  lineBarsData: [LineChartBarData(
-                    spots: snapshot.data!,
-                  )]
-                )
-              );
-                }
-              },
-            )
-          ],),
+        body: GridView.count(
+          crossAxisCount: 2,
+          children: [FutureBuilder(
+            future: dataSpot(),
+            builder: (context,snapshot){
+              if(!snapshot.hasData){
+                return CircularProgressIndicator();
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: LineChart(
+                    LineChartData(
+                      titlesData: FlTitlesData(topTitles: AxisTitles(axisNameWidget: Text("Air Temperature"))),
+                      backgroundColor: Colors.white,
+                      lineBarsData: [LineChartBarData(
+                        color: Colors.red,
+                        spots: snapshot.data!,
+                    )]
+                                  )
+                                ),
+                );
+              }
+            },
+          ),]
+        ),
     );
   }
 }
