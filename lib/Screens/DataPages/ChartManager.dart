@@ -1,5 +1,13 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:app_001/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'JSONData.dart';
+
 
 /*DOCS: Floating action button will hold date range and check boxes 
         Have function to check date range, bools then add to list of functions
@@ -43,6 +51,8 @@ class _ChartmanagerState extends State<Chartmanager> {
     _selectedDateRange = DateTimeRange(
       start: now.subtract(Duration(days: 7)), 
       end: now);
+
+      getDataList();
   }
 //shows the datepicker
   void _show() async {
@@ -217,12 +227,31 @@ class _ChartmanagerState extends State<Chartmanager> {
           });},
         ));
 
+      setState(() {
+        
+      });
       return checklist;
   }
 
 //Returns the url with date range and station ID. Premade is forced
   String parseURL(){
+    //print('Parsed URL: https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${f.format(_selectedDateRange!.start)},${f.format(_selectedDateRange!.end)}&premade=true');
     return 'https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${f.format(_selectedDateRange!.start)},${f.format(_selectedDateRange!.end)}&premade=true';
+  }
+
+
+  //returns a list of data entries following standard json format.
+  //Acess data using dot format (Data[i].datetime)
+  Future<List<Data>> getDataList()async{
+    List<Data> dataList = [];
+    String url = parseURL();
+    String response = await flutterCompute(apiCall, url);
+    List<dynamic> dataMap = jsonDecode(response);
+    
+    for (int i = 0; i < dataMap.length;i++){
+      dataList.add(Data.fromJson(dataMap[i]));
+    }
+    return dataList;
   }
 
   @override
@@ -242,7 +271,12 @@ class _ChartmanagerState extends State<Chartmanager> {
           child: ListView(
             children: checklist(),
           ),
-        )
+        ),
+        //Call charts from list above
+        body: ListView(
+          children: [
+
+          ],),
     );
   }
 }
