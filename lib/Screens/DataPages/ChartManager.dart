@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:app_001/main.dart';
 import 'package:flutter/material.dart';
@@ -60,19 +59,15 @@ class _ChartmanagerState extends State<Chartmanager> {
 
     List<Data> data = await getDataList();
 
-    print("start");
     //this ignores null checks. also really slow. Fix
     for (int i = 0; i<data.length;i++){
-      print(i);
-      int x = data[i].datetime ?? 0;
+    //  int x = data[i].datetime ?? 0;   //This is currently not used. consider breaking into different area?
       double y = data[i].airTemperature ?? 0;
-        airTemperatureSpotList.add(FlSpot(x.toDouble(), y));
+        airTemperatureSpotList.add(FlSpot(i.toDouble(),y));
       
-      print("End of for loop");
     }
 
     //never gets here yet
-    print("end");
     return airTemperatureSpotList;
   }
 //shows the datepicker
@@ -254,10 +249,19 @@ class _ChartmanagerState extends State<Chartmanager> {
       return checklist;
   }
 
+  List<String> calculateDaysInterval(DateTime startDate, DateTime endDate) {
+  List<String> days = [];
+  for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
+    String temp = f.format(startDate.add(Duration(days: i)));
+    days.add(temp);
+  }
+  return days;
+}
 //Returns the url with date range and station ID. Premade is forced
   String parseURL(){
+    List<String> dayArr= calculateDaysInterval(_selectedDateRange!.start, _selectedDateRange!.end);
     //print('Parsed URL: https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${f.format(_selectedDateRange!.start)},${f.format(_selectedDateRange!.end)}&premade=true');
-    return 'https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${f.format(_selectedDateRange!.start)},${f.format(_selectedDateRange!.end)}&premade=true';
+    return 'https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${dayArr.join(',')}&premade=true';
   }
 
 
@@ -295,7 +299,7 @@ class _ChartmanagerState extends State<Chartmanager> {
         ),
         //Call charts from list above
         body: GridView.count(
-          crossAxisCount: 2,
+          crossAxisCount: 1,
           children: [FutureBuilder(
             future: dataSpot(),
             builder: (context,snapshot){
@@ -306,13 +310,29 @@ class _ChartmanagerState extends State<Chartmanager> {
                   padding: const EdgeInsets.all(5.0),
                   child: LineChart(
                     LineChartData(
-                      titlesData: FlTitlesData(topTitles: AxisTitles(axisNameWidget: Text("Air Temperature"))),
-                      backgroundColor: Colors.white,
+                      
+                      titlesData: FlTitlesData(topTitles: AxisTitles(axisNameWidget: Text("Air Temperature")),
+                      
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 38,
+                             maxIncluded: false,
+                          )
+                        )
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.secondary, //pick something better for colors
                       lineBarsData: [LineChartBarData(
                         color: Colors.red,
                         spots: snapshot.data!,
+                        dotData: FlDotData(
+                          show: false
+                        )
                     )]
-                                  )
+                    
+                                  ),
+                
+                                  
                                 ),
                 );
               }
