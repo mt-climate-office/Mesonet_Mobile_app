@@ -60,7 +60,7 @@ class Data {
   factory Data.fromJson(Map<String,dynamic> json) {
     return Data(
     datetime: json['datetime'],
-    airTemperature: json['Air Temperature @ 2 m [°F]'],
+    airTemperature: json['Air Temperature @ 2 m [°F]'] ?? json['Air Temperature @ 8 ft [°F]'],
     Precipitation: json['Precipitation [in]'],
     maxPrecipRate: json['Max Precip Rate [in/hr]'],
     atmosphericPressure: json['Atmospheric Pressure [mbar]'],

@@ -13,6 +13,14 @@ import 'JSONData.dart';
         Have to call json here; parse and pass data from here?
         */
 
+
+/*Problem: Bottom titles need to be generated depending on length of calender
+  Switch cases can be used to find if duration is more or less than x
+  Switch cases are also used to generate the title names, based off x values in graph
+  See if theres a better way to code than nested switches
+  
+  Switch case also to be used in listview children [] for tie into checklist*/
+
 class Chartmanager extends StatefulWidget {
   final String id;
   const Chartmanager({super.key, required this.id});
@@ -26,6 +34,8 @@ class _ChartmanagerState extends State<Chartmanager> {
   final f = DateFormat('yyyy-MM-dd');
   DateTime now = DateTime.now();
   DateTimeRange? _selectedDateRange;
+
+  
 
 /*NOTE: Setting booleans for initial charting. */
   bool? airTemperature = true;
@@ -54,43 +64,44 @@ class _ChartmanagerState extends State<Chartmanager> {
       getDataList();
   }
 
-  Future<List<FlSpot>> dataSpot() async{
-    List<FlSpot> airTemperatureSpotList = [];
-
-    List<Data> data = await getDataList();
-
-    //this ignores null checks. also really slow. Fix
-    for (int i = 0; i<data.length;i++){
-    //  int x = data[i].datetime ?? 0;   //This is currently not used. consider breaking into different area?
-      double y = data[i].airTemperature ?? 0;
-        airTemperatureSpotList.add(FlSpot(i.toDouble(),y));
-      
-    }
-
-    //never gets here yet
-    return airTemperatureSpotList;
+// This block handles the Data retreval and api calls.
+//==============================================================================
+  //sets widgets in checklist.
+  //Date picker and checkboxes
+  List<String> calculateDaysInterval(DateTime startDate, DateTime endDate) {
+  List<String> days = [];
+  for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
+    String temp = f.format(startDate.add(Duration(days: i)));
+    days.add(temp);
   }
-//shows the datepicker
-  void _show() async {
-    final DateTimeRange? result = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2022, 1, 1),
-      lastDate: DateTime.now(),
-      currentDate: DateTime.now(),
-      saveText: 'Done',
-    );
-
-    if (result != null) {
-      // Rebuild the UI
-      setState(() {
-        _selectedDateRange = result;
-      });
-    }
+  return days;
+}
+  
+  //Returns the url with date range and station ID. Premade is forced
+  String parseURL(){
+    List<String> dayArr= calculateDaysInterval(_selectedDateRange!.start, _selectedDateRange!.end);
+    //print('Parsed URL: https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${f.format(_selectedDateRange!.start)},${f.format(_selectedDateRange!.end)}&premade=true');
+    return 'https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${dayArr.join(',')}&premade=true';
   }
 
-//sets widgets in checklist.
-//Date picker and checkboxes
-  List<Widget> checklist() {
+  //returns a list of data entries following standard json format.
+  //Acess data using dot format (Data[i].datetime)
+  Future<List<Data>> getDataList()async{
+    List<Data> dataList = [];
+    String url = parseURL();
+    String response = await flutterCompute(apiCall, url);
+    List<dynamic> dataMap = jsonDecode(response);
+    
+    for (int i = 0; i < dataMap.length;i++){
+      dataList.add(Data.fromJson(dataMap[i]));
+    }
+    return dataList;
+  }
+
+//================================================================================
+
+//This block handles the checklist and date picker
+List<Widget> checklist() {
     List<Widget> checklist = [];
 
     checklist.add(ListTile(
@@ -249,35 +260,54 @@ class _ChartmanagerState extends State<Chartmanager> {
       return checklist;
   }
 
-  List<String> calculateDaysInterval(DateTime startDate, DateTime endDate) {
-  List<String> days = [];
-  for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
-    String temp = f.format(startDate.add(Duration(days: i)));
-    days.add(temp);
-  }
-  return days;
-}
-//Returns the url with date range and station ID. Premade is forced
-  String parseURL(){
-    List<String> dayArr= calculateDaysInterval(_selectedDateRange!.start, _selectedDateRange!.end);
-    //print('Parsed URL: https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${f.format(_selectedDateRange!.start)},${f.format(_selectedDateRange!.end)}&premade=true');
-    return 'https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${dayArr.join(',')}&premade=true';
-  }
+//shows the datepicker
+  void _show() async {
+    final DateTimeRange? result = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2022, 1, 1),
+      lastDate: DateTime.now(),
+      currentDate: DateTime.now(),
+      saveText: 'Done',
+    );
 
-
-  //returns a list of data entries following standard json format.
-  //Acess data using dot format (Data[i].datetime)
-  Future<List<Data>> getDataList()async{
-    List<Data> dataList = [];
-    String url = parseURL();
-    String response = await flutterCompute(apiCall, url);
-    List<dynamic> dataMap = jsonDecode(response);
-    
-    for (int i = 0; i < dataMap.length;i++){
-      dataList.add(Data.fromJson(dataMap[i]));
+    if (result != null) {
+      // Rebuild the UI
+      setState(() {
+        _selectedDateRange = result;
+      });
     }
-    return dataList;
   }
+
+//=================================================================================
+
+  Future<List<FlSpot>> dataSpot() async{
+    List<FlSpot> airTemperatureSpotList = [];
+
+    List<Data> data = await getDataList();
+    //this ignores null checks. also really slow. Fix
+    for (int i = 0; i<data.length;i++){
+    //  int x = data[i].datetime ?? 0;   //This is currently not used. consider breaking into different area?
+      double y = data[i].airTemperature ?? 0;
+        airTemperatureSpotList.add(FlSpot(i.toDouble(),y));
+    }
+    return airTemperatureSpotList;
+  }
+
+  Future<List<FlSpot>> lineChart() async{
+    List<FlSpot> spotList = [];
+    List<Data> dataList = [];
+    double y = 0;
+
+    for (int i = 0; i<dataList.length;i++){
+    //  int x = data[i].datetime ?? 0;   //This is currently not used. consider breaking into different area?
+      y = dataList[i].airTemperature ?? 0;
+        spotList.add(FlSpot(i.toDouble(),y));
+    }
+
+    return spotList;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

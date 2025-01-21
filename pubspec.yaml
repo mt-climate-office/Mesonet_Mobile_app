@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   flutter_isolate: ^2.1.0
   flutter_map: ^7.0.2
+  gradient_icon: ^2.0.9
   http: ^1.2.2
   intl: ^0.20.1
   latlong2: ^0.9.1
@@ -24,3 +25,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets: 
+    - lib/assets/

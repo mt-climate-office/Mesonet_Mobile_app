@@ -16,27 +16,37 @@ class _PhotoPageState extends State<PhotoPage> {
   Consider changing to set tile size beforehand?
   More work to be done here, but its beta for now */
 
-  List<FadeInImage> getImages(String id){
-    List<FadeInImage> imageList =[];
+  
 
-    imageList.add(FadeInImage(
-      placeholder: MemoryImage(kTransparentImage),
-      image: NetworkImage('https://mesonet.climate.umt.edu/api/v2/photos/$id/n/?force=True'))
+  List<Card> getImages(String id){
+    List<Card> imageList =[];
+
+    imageList.add(Card(
+      child: FadeInImage(
+        placeholder: MemoryImage(kTransparentImage),
+        image: NetworkImage('https://mesonet.climate.umt.edu/api/v2/photos/$id/n/?force=True')),
+    )
       );
 
-      imageList.add(FadeInImage(
-      placeholder: MemoryImage(kTransparentImage),
-      image: NetworkImage('https://mesonet.climate.umt.edu/api/v2/photos/$id/e/?force=True'))
+      imageList.add(Card(
+        child: FadeInImage(
+        placeholder: MemoryImage(kTransparentImage),
+        image: NetworkImage('https://mesonet.climate.umt.edu/api/v2/photos/$id/e/?force=True')),
+      )
       );
 
-      imageList.add(FadeInImage(
-      placeholder: MemoryImage(kTransparentImage),
-      image: NetworkImage('https://mesonet.climate.umt.edu/api/v2/photos/$id/s/?force=True'))
+      imageList.add(Card(
+        child: FadeInImage(
+        placeholder: MemoryImage(kTransparentImage),
+        image: NetworkImage('https://mesonet.climate.umt.edu/api/v2/photos/$id/s/?force=True')),
+      )
       );
 
-      imageList.add(FadeInImage(
-      placeholder: MemoryImage(kTransparentImage),
-      image: NetworkImage('https://mesonet.climate.umt.edu/api/v2/photos/$id/w/?force=True'))
+      imageList.add(Card(
+        child: FadeInImage(
+        placeholder: MemoryImage(kTransparentImage),
+        image: NetworkImage('https://mesonet.climate.umt.edu/api/v2/photos/$id/w/?force=True')),
+      )
       );
 
     return imageList;
@@ -46,6 +56,7 @@ class _PhotoPageState extends State<PhotoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
+        scrollDirection: Axis.horizontal,
         children: getImages(widget.id),
           
         ),

@@ -1,5 +1,6 @@
 import 'package:app_001/Screens/DataPages/ChartManager.dart';
 import 'package:app_001/Screens/DataPages/CurrentData.dart';
+import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
 import 'package:app_001/Screens/map.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +32,16 @@ class _HydroStationPageState extends State<HydroStationPage> {
     if (hydroBool == 1){
     _pages = [
       Currentdata(id: id),   //setting pages 
+      CurrentDataPretty(id: id),
       Chartmanager(id: id),
       PhotoPage(id: id),
+      
+      
   ];
     } else{
       _pages = [
       Currentdata(id: id),
+      CurrentDataPretty(id: id),
       Chartmanager(id: id),
   ];
     }
