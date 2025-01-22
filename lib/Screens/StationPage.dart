@@ -2,6 +2,7 @@ import 'package:app_001/Screens/DataPages/ChartManager.dart';
 import 'package:app_001/Screens/DataPages/CurrentData.dart';
 import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
+import 'package:app_001/Screens/Forcast.dart';
 import 'package:app_001/Screens/map.dart';
 import 'package:flutter/material.dart';
 
@@ -31,15 +32,17 @@ class _HydroStationPageState extends State<HydroStationPage> {
   void setPages(String id,int hydroBool){ //setting pages for viewing agrimet
     if (hydroBool == 1){
     _pages = [
+      Forcast(lat: widget.station.lat, lng: widget.station.lon),
       Currentdata(id: id),   //setting pages 
       CurrentDataPretty(id: id),
       Chartmanager(id: id),
-      PhotoPage(id: id),
+      //PhotoPage(id: id),
       
       
   ];
     } else{
       _pages = [
+      Forcast(lat: widget.station.lat, lng: widget.station.lon),
       Currentdata(id: id),
       CurrentDataPretty(id: id),
       Chartmanager(id: id),
@@ -112,6 +115,8 @@ class _HydroStationPageState extends State<HydroStationPage> {
           ))
         ],
       )
+
+
     );
   }
 }
