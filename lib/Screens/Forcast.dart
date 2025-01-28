@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:weather_icons/weather_icons.dart';
+
+typedef void TodaysForcastIconCallback(BoxedIcon icon);
 
 class Forcast extends StatefulWidget {
   final double lat;
@@ -77,57 +80,58 @@ class _ForcastState extends State<Forcast> {
                   itemBuilder: (context, index) {
                     return Card(
                       color: Theme.of(context).colorScheme.primary,
+                      child: Padding(
+                      padding: const EdgeInsets.all(10.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            width: 200,
-                            child: Column(
-                              
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Center(
-                                  child: Text('${snapshot.data![index]['name']}',
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onPrimaryFixed,
-                                    fontSize: 15
-                                  ),),
-                                ),
-                                Center(
-                                  child: Text(dateConvert(snapshot.data![index]['startTime']),
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                    fontSize: 10,
-                                    
-                                  ),),
-                                )
-                              ],
+                        BoxedIcon(
+                          getWeatherIcon(snapshot.data![index]['shortForecast']),
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          size: 50,
+                        ),
+                        SizedBox(
+                          width: 150,
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                            child: Text(
+                              '${snapshot.data![index]['name']}',
+                              style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontSize: 15,
+                              ),
+                            ),
+                            ),
+                            Center(
+                            child: Text(
+                              dateConvert(snapshot.data![index]['startTime']),
+                              style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontSize: 10,
+                              ),
+                            ),
+                            ),
+                          ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            snapshot.data![index]['detailedForecast'],
+                            style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
                             ),
                           ),
-                          //image
-                         // FadeInImage(placeholder: MemoryImage(kTransparentImage),
-                          // image: NetworkImage(snapshot.data![index]['icon'])),
-                          //temp
-                          //Wind compass
-                          // AspectRatio(aspectRatio: 1/1,
-                          // child: Stack(
-                          //   alignment: Alignment.center,
-                          //   children: [
-                          //     Image.asset('lib/assets/cadrant.png'),
-                            
-                          //   ],
-                          // ),)
-                          //wind speed
-                          Expanded(
-                            child: Text(snapshot.data![index]['detailedForecast'],
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 12,
-                              fontStyle: FontStyle.italic
-                            ),),
-                          )
+                          ),
+                        ),
                         ],
-                      )
+                      ),
+                      ),
                     );
                   });
             } else {
@@ -139,5 +143,27 @@ class _ForcastState extends State<Forcast> {
         ),
       ),
     ]);
+  }
+}
+
+IconData getWeatherIcon(String description) {
+  if (description.toLowerCase().contains('clear') || description.toLowerCase().contains('sunny')) {
+    return WeatherIcons.day_sunny;
+  } else if (description.toLowerCase().contains('partly cloudy') || description.toLowerCase().contains('partly sunny')) {
+    return WeatherIcons.day_cloudy;
+  } else if (description.toLowerCase().contains('cloudy')) {
+    return WeatherIcons.cloud;
+  } else if (description.toLowerCase().contains('rain') || description.toLowerCase().contains('showers')) {
+    return WeatherIcons.rain;
+  } else if (description.toLowerCase().contains('thunderstorm')) {
+    return WeatherIcons.thunderstorm;
+  } else if (description.toLowerCase().contains('snow')) {
+    return WeatherIcons.snow;
+  } else if (description.toLowerCase().contains('fog')) {
+    return WeatherIcons.fog;
+  } else if (description.toLowerCase().contains('windy')) {
+    return WeatherIcons.strong_wind;
+  } else {
+    return WeatherIcons.na;
   }
 }

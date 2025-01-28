@@ -3,8 +3,11 @@ import 'package:app_001/main.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
+import 'package:weather_icons/weather_icons.dart';
 import 'dart:convert';
 import 'JSONData.dart';
+import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
+import 'package:app_001/Screens/DataPages/Hero_Pages/Temp_Splash.dart';
 
 class CurrentDataPretty extends StatefulWidget {
   final String id;
@@ -15,6 +18,9 @@ class CurrentDataPretty extends StatefulWidget {
 }
 
 class _CurrentDataPrettyState extends State<CurrentDataPretty> {
+
+  BoxedIcon todaysWeatherIcon = BoxedIcon(WeatherIcons.day_sunny);
+
   @override
   initState() {
     super.initState();
@@ -152,7 +158,10 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                                               color: Theme.of(context).colorScheme.onPrimaryContainer,
                                               width: 1.0,
                                             )),
-                                        child: Container(),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: TempSplash(),
+                                        ),
                                       ),
                                     ),
                                     Expanded(
@@ -188,7 +197,11 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                                               color: Theme.of(context).colorScheme.onPrimaryContainer,
                                               width: 1.0,
                                             )),
-                                        child: Container(),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Precip(id: widget.id),
+                                        ),
+                                          
                                       ),
                                     ),
                                     Flexible(

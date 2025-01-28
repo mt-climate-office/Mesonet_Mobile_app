@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:app_001/Screens/DataPages/JSONData.dart';
 import 'package:rainbow_color/rainbow_color.dart';
-import 'dart:math';
 
 /*Returns a column with graphical representations of soil VWC and Temp
 Use a hero widget to allow for tap to expand in this.
@@ -66,6 +65,10 @@ class _soil_profilesState extends State<soil_profiles> {
       );
     }
 
+    /// This class represents the soil profiles page in the application.
+    /// It utilizes a rainbow color scheme for visualizing volumetric water content (VWC).
+    ///
+    /// The `rbColorVWC` variable is used to create a rainbow color gradient for the VWC data.
     var rbColorVWC = Rainbow(
       spectrum: [
         Colors.brown,
@@ -109,15 +112,15 @@ class _soil_profilesState extends State<soil_profiles> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 verticalDirection: VerticalDirection.up,
                 children: [
-                  Text('40"', style: TextStyle(fontWeight: FontWeight.w500)),
-                  Text('20"', style: TextStyle(fontWeight: FontWeight.w500)),
-                  Text(' 8"', style: TextStyle(fontWeight: FontWeight.w500)),
-                  Text(' 4"', style: TextStyle(fontWeight: FontWeight.w500)),
-                  Text(' 2"', style: TextStyle(fontWeight: FontWeight.w500)),
+                  Text('40"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
+                  Text('20"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
+                  Text(' 8"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
+                  Text(' 4"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
+                  Text(' 2"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
                 ],
               )),
               Flexible(
-                flex: 3,
+                flex: 2,
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
@@ -164,7 +167,7 @@ class _soil_profilesState extends State<soil_profiles> {
                   )),
               
               Flexible(
-                flex: 3,
+                flex: 2,
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
