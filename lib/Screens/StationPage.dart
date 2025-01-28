@@ -1,4 +1,5 @@
 import 'package:app_001/Screens/DataPages/ChartManager.dart';
+import 'package:app_001/Screens/DataPages/CurrentData.dart';
 import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
 import 'package:app_001/Screens/Forcast.dart';
 import 'package:app_001/Screens/map.dart';
