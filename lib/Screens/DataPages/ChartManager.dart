@@ -351,7 +351,7 @@ List<Widget> checklist() {
                           )
                         )
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.secondary, //pick something better for colors
+                      backgroundColor: Theme.of(context).colorScheme.surfaceBright, //pick something better for colors
                       lineBarsData: [LineChartBarData(
                         color: Colors.red,
                         spots: snapshot.data!,

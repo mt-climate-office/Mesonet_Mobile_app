@@ -1,7 +1,5 @@
 import 'package:app_001/Screens/DataPages/ChartManager.dart';
-import 'package:app_001/Screens/DataPages/CurrentData.dart';
 import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
-import 'package:app_001/Screens/DataPages/Photos.dart';
 import 'package:app_001/Screens/Forcast.dart';
 import 'package:app_001/Screens/map.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +30,7 @@ class _HydroStationPageState extends State<HydroStationPage> {
   void setPages(String id,int hydroBool){ //setting pages for viewing agrimet
     if (hydroBool == 1){
     _pages = [
-      Forcast(lat: widget.station.lat, lng: widget.station.lon),
-      Currentdata(id: id),   //setting pages 
+      Forcast(lat: widget.station.lat, lng: widget.station.lon),   //setting pages 
       CurrentDataPretty(id: id),
       Chartmanager(id: id),
       //PhotoPage(id: id),
@@ -43,7 +40,6 @@ class _HydroStationPageState extends State<HydroStationPage> {
     } else{
       _pages = [
       Forcast(lat: widget.station.lat, lng: widget.station.lon),
-      Currentdata(id: id),
       CurrentDataPretty(id: id),
       Chartmanager(id: id),
   ];
@@ -52,11 +48,11 @@ class _HydroStationPageState extends State<HydroStationPage> {
   }
 
   final _pageController = PageController(
-      initialPage: 0,  //initial page for the marker
+      initialPage: 1,  //initial page for the marker
       viewportFraction: 1,
     );
 
-  int _activePage = 0;
+  int _activePage = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +60,11 @@ class _HydroStationPageState extends State<HydroStationPage> {
       appBar: AppBar(
         title: Text(widget.station.name,
         style: TextStyle(fontWeight: FontWeight.w800,
-        color: Colors.white),),
+        color: Theme.of(context).colorScheme.onPrimaryFixed),),
         centerTitle: true,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).colorScheme.onPrimary
+        ),
         backgroundColor: (widget.station.subNetwork == 'HydroMet') ?Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary,
       ),
       body: Stack(
@@ -84,10 +83,10 @@ class _HydroStationPageState extends State<HydroStationPage> {
       ),
 
         Positioned(
-          bottom: 25,
+          bottom: 5,
           left: 125,
           right: 125,
-          top: 700,
+          top: 725,
           child: Container(
             color: Colors.transparent,
             child: Row(
@@ -105,8 +104,8 @@ class _HydroStationPageState extends State<HydroStationPage> {
                       child: CircleAvatar(
                         radius: 8,
                         backgroundColor: _activePage == index
-                        ? Colors.amber
-                        : Colors.blue,
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                     ),
                   )

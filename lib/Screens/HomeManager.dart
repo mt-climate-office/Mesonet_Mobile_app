@@ -18,11 +18,12 @@ final List _screens = [
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(context).colorScheme.onPrimary,
-        selectedItemColor: Colors.white,
+        unselectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
+        selectedItemColor: Theme.of(context).colorScheme.onPrimary,
         
         currentIndex: _currentIndex,
         onTap: (index){

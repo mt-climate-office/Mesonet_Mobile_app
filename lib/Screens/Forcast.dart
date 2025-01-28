@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class Forcast extends StatefulWidget {
   final double lat;
@@ -56,7 +55,7 @@ class _ForcastState extends State<Forcast> {
         height: 50,
         width: MediaQuery.of(context).size.width/2,
         child: Card(
-          color: Colors.blue,
+          color: Theme.of(context).colorScheme.primary,
           child: Center(
             child: Text('Weekly Forecast'),
           ),
@@ -77,23 +76,33 @@ class _ForcastState extends State<Forcast> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return Card(
-                      color: Colors.blue,
+                      color: Theme.of(context).colorScheme.primary,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text('${snapshot.data![index]['name']}',
-                              style: TextStyle(
-                                fontSize: 15
-                              ),),
-                              Text(dateConvert(snapshot.data![index]['startTime']),
-                              style: TextStyle(
-                                fontSize: 10,
-                                
-                              ),)
-                            ],
+                          SizedBox(
+                            width: 200,
+                            child: Column(
+                              
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: Text('${snapshot.data![index]['name']}',
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onPrimaryFixed,
+                                    fontSize: 15
+                                  ),),
+                                ),
+                                Center(
+                                  child: Text(dateConvert(snapshot.data![index]['startTime']),
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                    fontSize: 10,
+                                    
+                                  ),),
+                                )
+                              ],
+                            ),
                           ),
                           //image
                          // FadeInImage(placeholder: MemoryImage(kTransparentImage),
@@ -109,6 +118,14 @@ class _ForcastState extends State<Forcast> {
                           //   ],
                           // ),)
                           //wind speed
+                          Expanded(
+                            child: Text(snapshot.data![index]['detailedForecast'],
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic
+                            ),),
+                          )
                         ],
                       )
                     );
