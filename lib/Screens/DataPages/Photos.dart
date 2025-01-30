@@ -44,10 +44,17 @@ class _PhotoPageState extends State<PhotoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: PageScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      children: getImages(widget.id),
+    return Stack(
+      children: [
+
+      ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: PageScrollPhysics(),
+
+        itemBuilder: (context, index) {
+        return getImages(widget.id)[index % 4];
+      })
+      ],
     );
   }
 }

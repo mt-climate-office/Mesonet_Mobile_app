@@ -10,7 +10,7 @@ class _TempSplashState extends State<TempSplash> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        
+        Container(color: Colors.white30,)
       ],
     );
   }

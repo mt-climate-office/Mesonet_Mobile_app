@@ -187,7 +187,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                                 child: Column(
                                   children: [
                                     Flexible(
-                                      flex: 3,
+                                      flex: 4,
                                       child: Card(
                                         color: Theme.of(context).colorScheme.primary,
                                         shape: RoundedRectangleBorder(

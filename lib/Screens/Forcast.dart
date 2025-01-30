@@ -74,65 +74,68 @@ class _ForcastState extends State<Forcast> {
                 color: Colors.red,
               );
             } else if (snapshot.hasData) {
-              return ListView.builder(
-                  itemCount: snapshot.data!.length,
+                return ListView.builder(
+                  itemCount: snapshot.data!.length + 1,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    return Card(
-                      color: Theme.of(context).colorScheme.primary,
+                  if (index == snapshot.data!.length) {
+                    return SizedBox(height: 60); // Padding at the bottom of the list
+                  }
+                  return Card(
+                    color: Theme.of(context).colorScheme.primary,
+                    child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                    BoxedIcon(
+                      getWeatherIcon(snapshot.data![index]['shortForecast']),
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      size: 50,
+                    ),
+                    SizedBox(
+                      width: 150,
+                      child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      Center(
+                      child: Text(
+                        '${snapshot.data![index]['name']}',
+                        style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 15,
+                        ),
+                      ),
+                      ),
+                      Center(
+                      child: Text(
+                        dateConvert(snapshot.data![index]['startTime']),
+                        style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 10,
+                        ),
+                      ),
+                      ),
+                      ],
+                      ),
+                    ),
+                    Expanded(
                       child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                        BoxedIcon(
-                          getWeatherIcon(snapshot.data![index]['shortForecast']),
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          size: 50,
-                        ),
-                        SizedBox(
-                          width: 150,
-                          child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                            child: Text(
-                              '${snapshot.data![index]['name']}',
-                              style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 15,
-                              ),
-                            ),
-                            ),
-                            Center(
-                            child: Text(
-                              dateConvert(snapshot.data![index]['startTime']),
-                              style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 10,
-                              ),
-                            ),
-                            ),
-                          ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Text(
-                            snapshot.data![index]['detailedForecast'],
-                            style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontSize: 12,
-                            fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          ),
-                        ),
-                        ],
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Text(
+                      snapshot.data![index]['detailedForecast'],
+                      style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
                       ),
                       ),
-                    );
+                      ),
+                    ),
+                    ],
+                    ),
+                    ),
+                  );
                   });
             } else {
               return Center(
