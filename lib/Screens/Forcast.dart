@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:weather_icons/weather_icons.dart';
 
-typedef void TodaysForcastIconCallback(BoxedIcon icon);
+typedef TodaysForcastIconCallback = void Function(BoxedIcon icon);
 
 class Forcast extends StatefulWidget {
   final double lat;

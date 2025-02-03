@@ -1,5 +1,4 @@
 import 'package:app_001/Screens/DataPages/ChartManager.dart';
-import 'package:app_001/Screens/DataPages/CurrentData.dart';
 import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
 import 'package:app_001/Screens/Forcast.dart';
 import 'package:app_001/Screens/map.dart';
@@ -41,7 +40,8 @@ class _HydroStationPageState extends State<HydroStationPage> {
     } else{
       _pages = [
       Forcast(lat: widget.station.lat, lng: widget.station.lon),
-      CurrentDataPretty(id: id),
+      //CurrentDataPretty(id: id),
+      testPage(),
       Chartmanager(id: id),
   ];
     }
@@ -118,5 +118,14 @@ class _HydroStationPageState extends State<HydroStationPage> {
 
 
     );
+  }
+}
+
+class testPage extends StatelessWidget {
+  const testPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

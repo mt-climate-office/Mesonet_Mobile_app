@@ -54,3 +54,4 @@ class about extends StatelessWidget {
     return const Placeholder();
   }
 }
+

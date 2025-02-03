@@ -3,11 +3,9 @@ import 'package:app_001/main.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
-import 'package:weather_icons/weather_icons.dart';
 import 'dart:convert';
 import 'JSONData.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
-import 'package:app_001/Screens/DataPages/Hero_Pages/Temp_Splash.dart';
 
 class CurrentDataPretty extends StatefulWidget {
   final String id;
@@ -19,7 +17,7 @@ class CurrentDataPretty extends StatefulWidget {
 
 class _CurrentDataPrettyState extends State<CurrentDataPretty> {
 
-  BoxedIcon todaysWeatherIcon = BoxedIcon(WeatherIcons.day_sunny);
+  //BoxedIcon todaysWeatherIcon = BoxedIcon(WeatherIcons.day_sunny);
 
   @override
   initState() {
@@ -39,20 +37,6 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
     dataList = (Data.fromJson(dataMap[0]));
 
     return dataList;
-  }
-
-  Color getGradientColors(double temperature) {
-    // Define color ranges
-    final coldColor = Colors.blue;
-    final hotColor = Colors.red;
-
-    // Interpolate between cold and hot colors based on temperature
-    final factor =
-        (temperature + 20) / (120); // Assuming temperature range 0-50
-    Color interpolatedColor =
-        Color.lerp(coldColor, hotColor, factor.abs()) as Color;
-
-    return interpolatedColor;
   }
 
   @override
@@ -160,7 +144,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                                             )),
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
-                                          child: TempSplash(),
+                                          child: Container(),
                                         ),
                                       ),
                                     ),

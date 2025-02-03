@@ -18,25 +18,29 @@ class _PhotoPageState extends State<PhotoPage> {
     List<Widget> imageList = [];
 
     imageList.add(Image.network(
-        'https://mesonet.climate.umt.edu/api/v2/photos/$id/n/?force=True'));
+        'https://mesonet.climate.umt.edu/api/v2/photos/$id/n/?force=True',
+        errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),));
 
     imageList.add(Image.network(
         'https://mesonet.climate.umt.edu/api/v2/photos/$id/w/?force=True',
         errorBuilder:
             (BuildContext context, Object exception, StackTrace? stackTrace) {
       return Image.network(
-          'https://mesonet.climate.umt.edu/api/v2/photos/$id/ns/?force=True');
+          'https://mesonet.climate.umt.edu/api/v2/photos/$id/ns/?force=True',
+          errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),);
     }));
 
     imageList.add(Image.network(
-        'https://mesonet.climate.umt.edu/api/v2/photos/$id/s/?force=True'));
+        'https://mesonet.climate.umt.edu/api/v2/photos/$id/s/?force=True',
+        errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),));
 
     imageList.add(Image.network(
         'https://mesonet.climate.umt.edu/api/v2/photos/$id/e/?force=True',
         errorBuilder:
             (BuildContext context, Object exception, StackTrace? stackTrace) {
       return Image.network(
-          'https://mesonet.climate.umt.edu/api/v2/photos/$id/ss/?force=True');
+          'https://mesonet.climate.umt.edu/api/v2/photos/$id/ss/?force=True',
+          errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),);
     }));
 
     return imageList;

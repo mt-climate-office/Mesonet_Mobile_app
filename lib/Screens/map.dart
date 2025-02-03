@@ -7,7 +7,6 @@ import 'package:latlong2/latlong.dart';
 import 'dart:convert';
 import 'package:flutter_isolate/flutter_isolate.dart';
 
-
 class map extends StatefulWidget {
   const map({super.key});
 
@@ -46,7 +45,15 @@ class _mapState extends State<map> {
   @override
   void initState(){
     super.initState();
+    //GeoJsonParser myGeoJson = GeoJsonParser();
+     //myGeoJson.parseGeoJsonAsString(testGeoJson);
     getMarkers();
+  }
+
+  @override
+  void dispose(){
+    
+    super.dispose();
   }
 
   @pragma('vm:entry-point')

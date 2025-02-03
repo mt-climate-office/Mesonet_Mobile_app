@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TempSplash extends StatefulWidget {
+  const TempSplash({super.key});
+
   @override
   _TempSplashState createState() => _TempSplashState();
 }
