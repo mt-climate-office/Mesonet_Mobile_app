@@ -71,7 +71,7 @@ class _ForcastState extends State<Forcast> {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Placeholder(
-                color: Colors.red,
+                color: Colors.white,
               );
             } else if (snapshot.hasData) {
                 return ListView.builder(

@@ -16,12 +16,13 @@ class CurrentDataPretty extends StatefulWidget {
 }
 
 class _CurrentDataPrettyState extends State<CurrentDataPretty> {
-
-  //BoxedIcon todaysWeatherIcon = BoxedIcon(WeatherIcons.day_sunny);
+  late Future<Data> _dataFuture;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
+    _dataFuture = getData(
+        'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}');
   }
 
   @pragma('vm:entry-point')
@@ -43,15 +44,11 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getData(
-              'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}'),
+          future: _dataFuture,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              //waiting on the future
-              return const Placeholder();
+              return const Center(child: Text('Error'));
             } else if (snapshot.hasData) {
-              //Two rows, Photo listview on top, temp / info box on bottom.
-              //Will need to split bottom up into more column and rows
               return Column(
                 children: [
                   Row(
@@ -61,24 +58,22 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: AspectRatio(
-                          aspectRatio:
-                              1.75, //guesswork. Should be 16/9 but it isnt
+                          aspectRatio: 1.75,
                           child: Card(
                             clipBehavior: Clip.hardEdge,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 side: BorderSide(
-                                    color: Theme.of(context).colorScheme.onPrimaryContainer, width: 1.0)),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimaryContainer,
+                                    width: 1.0)),
                             child: PhotoPage(id: widget.id),
                           ),
                         ),
                       ),
-
-                      //Bottom boxes for data display. See diagram for concept
                     ],
                   ),
-
-                  //Temperature Box under the photos
                   Flexible(
                     flex: 1,
                     child: Card(
@@ -86,45 +81,59 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                           side: BorderSide(
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
                             width: 1.0,
                           )),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Flexible(child: Text('Air Temperature:${snapshot.data!.airTemperature.toString()}[°F]',
-                          style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryFixed),)),
-                          Flexible(child: Text('Relative Humidity:${snapshot.data!.relativeHumidity.toString()}[%]',
-                          style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryFixed))),
+                          Flexible(
+                              child: Text(
+                            'Air Temperature:${snapshot.data!.airTemperature.toString()}[°F]',
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryFixed),
+                          )),
+                          Flexible(
+                              child: Text(
+                            'Relative Humidity:${snapshot.data!.relativeHumidity.toString()}[%]',
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryFixed),
+                          )),
                         ],
                       ),
                     ),
                   ),
-                  //==========================================================
-                  //bottom flex to set up boxes for info
                   Flexible(
                     flex: 9,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Flexible(  //Left side box for soil info
+                        Flexible(
                           flex: 3,
                           child: Card(
                             color: Theme.of(context).colorScheme.primary,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 side: BorderSide(
-                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer,
                                   width: 1.0,
                                 )),
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
-                              child: soil_profiles(data: snapshot.data!,),
+                              child: soil_profiles(
+                                data: snapshot.data!,
+                              ),
                             ),
                           ),
                         ),
-
-                        //Center boxes in grid
                         Flexible(
                           flex: 5,
                           child: Row(
@@ -134,12 +143,16 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                                   children: [
                                     Expanded(
                                       child: Card(
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                             side: BorderSide(
-                                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimaryContainer,
                                               width: 1.0,
                                             )),
                                         child: Padding(
@@ -150,12 +163,16 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                                     ),
                                     Expanded(
                                       child: Card(
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                             side: BorderSide(
-                                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimaryContainer,
                                               width: 1.0,
                                             )),
                                         child: Container(),
@@ -164,39 +181,43 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                                   ],
                                 ),
                               ),
-
-                              //Right side Column
-                              //============================================================
                               Expanded(
                                 child: Column(
                                   children: [
                                     Flexible(
                                       flex: 4,
                                       child: Card(
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                             side: BorderSide(
-                                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimaryContainer,
                                               width: 1.0,
                                             )),
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: Precip(id: widget.id),
                                         ),
-                                          
                                       ),
                                     ),
                                     Flexible(
                                       flex: 2,
                                       child: Card(
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                             side: BorderSide(
-                                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimaryContainer,
                                               width: 1.0,
                                             )),
                                         child: Column(
@@ -212,14 +233,16 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                                                   alignment: Alignment.center,
                                                   children: [
                                                     Image.asset(
-                                                        'lib/assets/cadrant.png',),
+                                                      'lib/assets/cadrant.png',
+                                                    ),
                                                     Transform.rotate(
                                                       angle: snapshot.data!
                                                               .windDirection
                                                           as double,
                                                       child: Image.asset(
-                                                          'lib/assets/compass.png',
-                                                          scale: 2.5,),
+                                                        'lib/assets/compass.png',
+                                                        scale: 2.5,
+                                                      ),
                                                     )
                                                   ],
                                                 ),

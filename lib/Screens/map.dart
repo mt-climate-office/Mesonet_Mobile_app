@@ -71,9 +71,10 @@ class _mapState extends State<map> {
           point: LatLng(station.lat, station.lon), 
           child: GestureDetector(
             onTap: (){
+              print('headed to hydromet');
               Navigator.push(
                 context,
-                  MaterialPageRoute(builder: (context) => HydroStationPage(station: station,hydroBool: 1,)),
+                  MaterialPageRoute(builder: (context) => HydroStationPage(station: station,hydroBool: 1,)), //
                 );
             },
             child: Icon(
@@ -87,13 +88,14 @@ class _mapState extends State<map> {
           point: LatLng(station.lat, station.lon), 
           child: GestureDetector(
             onTap: (){
+              print('headed to agrimet');
               Navigator.push(
                 context,
                   MaterialPageRoute(builder: (context) => HydroStationPage(station: station,hydroBool: 0,)),
                 );
             },
             child: Icon(
-              Icons.circle_sharp,
+              Icons.star,
               color: Color.fromARGB(255, 46, 155, 18),),
             )
             )
@@ -106,7 +108,13 @@ class _mapState extends State<map> {
 
   Future<List<Marker>> getMarkers() async{
     String url = 'https://mesonet.climate.umt.edu/api/v2/stations/?type=json';
-    final String response = await flutterCompute(apiCall,url);
+    String response = '';
+    try{
+      response = await compute(apiCall, url);
+    } catch (e){
+      print('error: $e');
+    }
+      
     final List<StationMarker> stationList = await compute(parseToStationMarkers, response);
     List<Marker> markers = parseToMarkers(stationList);
     return markers;
