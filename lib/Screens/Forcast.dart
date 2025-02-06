@@ -10,7 +10,8 @@ typedef TodaysForcastIconCallback = void Function(BoxedIcon icon);
 class Forcast extends StatefulWidget {
   final double lat;
   final double lng;
-  const Forcast({super.key, required this.lat, required this.lng});
+  // final Function(BoxedIcon) getTodaysForcastIcon;
+  const Forcast({super.key, required this.lat, required this.lng, });
 
   @override
   State<Forcast> createState() => _ForcastState();
@@ -49,6 +50,18 @@ class _ForcastState extends State<Forcast> {
   String dateConvert(String time){
     DateTime date = DateTime.parse(time);
     return DateFormat('MMM dd').format(date).toString();
+  }
+
+  void getTodaysForcastIcon(TodaysForcastIconCallback callback) async {
+    List<dynamic> forecast = await getForcast();
+    if (forecast.isNotEmpty) {
+      BoxedIcon todaysIcon = BoxedIcon(
+        getWeatherIcon(forecast[0]['shortForecast']),
+        color: Colors.white, 
+        size: 50,
+      );
+      callback(todaysIcon);
+    }
   }
 
   @override
