@@ -131,35 +131,35 @@ class _soil_profilesState extends State<soil_profiles> {
                         child: Container(
                           color: getGradientColors(
                           (widget.data.soilTemperature5 ?? 0) as double, true),
-                          child: Center(child: Text('${(widget.data.soilTemperature5 ?? 0).toStringAsFixed(2)}°F',
+                          child: Center(child: Text('${widget.data.soilTemperature5?.toString() ?? 'N/A'}°F',
                           style: TextStyle(fontSize: 10),),),
                     )),
                     Expanded(
                         child: Container(
                       color: getGradientColors(
                           (widget.data.soilTemperature10 ?? 0) as double, true),
-                          child: Center(child: Text('${(widget.data.soilTemperature10 ?? 0).toStringAsFixed(2)}°F',
+                          child: Center(child: Text('${widget.data.soilTemperature10?.toString() ?? 'N/A'}°F',
                           style: TextStyle(fontSize: 10),),),
                     )),
                     Expanded(
                         child: Container(
                       color: getGradientColors(
                           (widget.data.soilTemperature20 ?? 0) as double, true),
-                          child: Center(child: Text('${(widget.data.soilTemperature20 ?? 0).toStringAsFixed(2)}°F',
+                          child: Center(child: Text('${widget.data.soilTemperature20?.toString() ?? 'N/A'}°F',
                           style: TextStyle(fontSize: 10),),),
                     )),
                     Expanded(
                         child: Container(
                       color: getGradientColors(
                           (widget.data.soilTemperature50 ?? 0) as double, true),
-                          child: Center(child: Text('${(widget.data.soilTemperature50 ?? 0).toStringAsFixed(2)}°F',
+                          child: Center(child: Text('${widget.data.soilTemperature50?.toString() ?? 'N/A'}°F',
                           style: TextStyle(fontSize: 10),),),
                     )),
                     Expanded(
                         child: Container(
                       color: getGradientColors(
                           (widget.data.soilTemperature100 ?? 0) as double, true),
-                          child: Center(child: Text('${(widget.data.soilTemperature100 ?? 0).toStringAsFixed(2)}°F',
+                          child: Center(child: Text('${widget.data.soilTemperature100?.toString() ?? 'N/A'}°F',
                           style: TextStyle(fontSize: 10),),),
                     )),
                                     ],
