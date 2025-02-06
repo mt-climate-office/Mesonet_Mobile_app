@@ -73,7 +73,13 @@ class _ForcastState extends State<Forcast> {
         child: Card(
           color: Theme.of(context).colorScheme.primary,
           child: Center(
-            child: Text('Weekly Forecast'),
+            child: Text('Weekly Forecast',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+            ),),
+            
           ),
         ),
       ),
@@ -92,7 +98,7 @@ class _ForcastState extends State<Forcast> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                   if (index == snapshot.data!.length) {
-                    return SizedBox(height: 60); // Padding at the bottom of the list
+                    return SizedBox(height: 25); // Padding at the bottom of the list
                   }
                   return Card(
                     color: Theme.of(context).colorScheme.primary,

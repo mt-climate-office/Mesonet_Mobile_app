@@ -92,16 +92,20 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                         children: [
                           Flexible(
                               child: Text(
-                            'Air Temperature:${snapshot.data!.airTemperature.toString()}[°F]',
+                            'Air Temperature: ${snapshot.data!.airTemperature.toString()}[°F]',
                             style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onPrimaryFixed),
                           )),
                           Flexible(
                               child: Text(
-                            'Relative Humidity:${snapshot.data!.relativeHumidity.toString()}[%]',
+                            'Relative Humidity: ${snapshot.data!.relativeHumidity.toString()}[%]',
                             style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onPrimaryFixed),
@@ -111,7 +115,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                     ),
                   ),
                   Flexible(
-                    flex: 9,
+                    flex: 7,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -271,9 +275,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty> {
                       ],
                     ),
                   ),
-                  Spacer(
-                    flex: 1,
-                  ),
+             
                 ],
               );
             } else {

@@ -332,7 +332,7 @@ class _ChartmanagerState extends State<Chartmanager> {
           future: dataSpot(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             } else {
               return Padding(
                 padding: const EdgeInsets.all(5.0),
