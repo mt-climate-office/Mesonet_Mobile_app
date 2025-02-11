@@ -6,7 +6,6 @@ import 'package:flutter_isolate/flutter_isolate.dart';
 import 'dart:convert';
 import 'JSONData.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
-import 'package:app_001/Screens/Forcast.dart';
 
 class CurrentDataPretty extends StatefulWidget {
   final String id;

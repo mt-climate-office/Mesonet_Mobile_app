@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:app_001/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:latlong2/latlong.dart';
 import 'JSONData.dart';
 
 /*DOCS: Floating action button will hold date range and check boxes 
@@ -32,6 +32,8 @@ class _ChartmanagerState extends State<Chartmanager> {
   final f = DateFormat('yyyy-MM-dd');
   DateTime now = DateTime.now();
   DateTimeRange? _selectedDateRange;
+
+  bool? shortTimeSpan = false;
 
 /*NOTE: Setting booleans for initial charting. */
   bool? airTemperature = true;
@@ -69,6 +71,14 @@ class _ChartmanagerState extends State<Chartmanager> {
       String temp = f.format(startDate.add(Duration(days: i)));
       days.add(temp);
     }
+    setState(() {
+      if (days.length > 7) {
+        shortTimeSpan = false;
+      } else {
+        shortTimeSpan = true;
+      }
+    });
+
     return days;
   }
 
@@ -282,15 +292,80 @@ class _ChartmanagerState extends State<Chartmanager> {
 
 //=================================================================================
 
-  Future<List<FlSpot>> dataSpot() async {
+  Future<List<FlSpot>> dataSpot(String param) async {
     List<FlSpot> airTemperatureSpotList = [];
 
     List<Data> data = await getDataList();
     //this ignores null checks. also really slow. Fix
     for (int i = 0; i < data.length; i++) {
       //  int x = data[i].datetime ?? 0;   //This is currently not used. consider breaking into different area?
-      double y = data[i].airTemperature ?? 0;
-      airTemperatureSpotList.add(FlSpot(i.toDouble(), y));
+      double y = 0;
+      switch (param) {
+        case 'airTemperature':
+          y = data[i].airTemperature ?? 0;
+          break;
+        case 'atmosphericPressure':
+          y = data[i].atmosphericPressure ?? 0;
+          break;
+        case 'gustSpeed':
+          y = data[i].gustSpeed ?? 0;
+          break;
+        case 'maxPrecipRate':
+          y = data[i].maxPrecipRate ?? 0;
+          break;
+        case 'precipitation':
+          y = data[i].Precipitation ?? 0;
+          break;
+        case 'relativeHumidity':
+          y = data[i].relativeHumidity ?? 0;
+          break;
+        case 'snowDepth':
+          y = data[i].snowDepth ?? 0;
+          break;
+        case 'soilTemperature5':
+          y = data[i].soilTemperature5 ?? 0;
+          break;
+        case 'soilTemperature10':
+          y = data[i].soilTemperature10 ?? 0;
+          break;
+        case 'soilTemperature20':
+          y = data[i].soilTemperature20 ?? 0;
+          break;
+        case 'soilTemperature50':
+          y = data[i].soilTemperature50 ?? 0;
+          break;
+        case 'soilTemperature100':
+          y = data[i].soilTemperature100 ?? 0;
+          break;
+        case 'soilVWC5':
+          y = data[i].soilVWC5 ?? 0;
+          break;
+        case 'soilVWC10':
+          y = data[i].soilVWC10 ?? 0;
+          break;
+        case 'soilVWC20':
+          y = data[i].soilVWC20 ?? 0;
+          break;
+        case 'soilVWC50':
+          y = data[i].soilVWC50 ?? 0;
+          break;
+        case 'soilVWC100':
+          y = data[i].soilVWC100 ?? 0;
+          break;
+        case 'solarRadiation':
+          y = data[i].solarRadiation ?? 0;
+          break;
+        case 'windDirection':
+          y = data[i].windDirection ?? 0;
+          break;
+        case 'windSpeed':
+          y = data[i].windSpeed ?? 0;
+          break;
+        default:
+          y = 0;
+      }
+
+      airTemperatureSpotList.add(FlSpot(data[i].datetime!.toDouble(), y));
     }
     return airTemperatureSpotList;
   }
@@ -301,12 +376,608 @@ class _ChartmanagerState extends State<Chartmanager> {
     double y = 0;
 
     for (int i = 0; i < dataList.length; i++) {
-      //  int x = data[i].datetime ?? 0;   //This is currently not used. consider breaking into different area?
+      String x =
+          DateFormat('yyyy-MM-dd').format(dataList[i].datetime as DateTime);
+      DateTime date = DateTime.parse(dataList[i].datetime as String);
       y = dataList[i].airTemperature ?? 0;
-      spotList.add(FlSpot(i.toDouble(), y));
+      spotList.add(FlSpot(
+          DateTime.parse(date as String).millisecondsSinceEpoch.toDouble(), y));
     }
 
     return spotList;
+  }
+
+  Widget airTempGraph() {
+    return Card(
+      color: Theme.of(context).colorScheme.primary,
+      child: FutureBuilder(
+        future: dataSpot('airTemperature'),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            double minY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a < b ? a : b);
+            double maxY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: LineChart(
+                LineChartData(
+                  minY: minY - 5,
+                  maxY: maxY + 5,
+                  titlesData: FlTitlesData(
+                      topTitles: AxisTitles(
+                          axisNameWidget: Text("Air Temperature",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.w700
+                          ),),
+                          axisNameSize: 26),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          getTitlesWidget: (value, meta) {
+                            if (shortTimeSpan!) {
+                              return Transform.rotate(
+                                angle: (pi / 4),
+                                alignment: Alignment.topLeft,
+                                child: Transform.translate(
+                                  offset: Offset(14, -5),
+                                  child: Text(
+                                    DateFormat('MM-dd - HH:00').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            value.toInt())),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Transform.rotate(
+                                angle: (pi / 4),
+                                alignment: Alignment.topLeft,
+                                child: Transform.translate(
+                                  offset: Offset(10, -5),
+                                  child: Text(
+                                    DateFormat('MM-dd').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            value.toInt())),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          reservedSize: shortTimeSpan! ? 75 : 40,
+                          showTitles: true,
+                          maxIncluded: false,
+                          minIncluded: false,
+                        ),
+                      ),
+                      leftTitles: AxisTitles(
+                          axisNameWidget: Text('Temperature'),
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 38,
+                            maxIncluded: false,
+                            minIncluded: false,
+                          )),
+                      rightTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 38,
+                        maxIncluded: false,
+                        minIncluded: false,
+                      ))),
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceBright, //pick something better for colors
+                  lineBarsData: [
+                    LineChartBarData(
+                        color: Colors.red,
+                        spots: snapshot.data!,
+                        dotData: FlDotData(show: false))
+                  ],
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+  Widget windSpeedGraph() {
+    return Card(
+      color: Theme.of(context).colorScheme.primary,
+      child: FutureBuilder(
+        future: dataSpot('windSpeed'),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            double minY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a < b ? a : b);
+            double maxY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: LineChart(
+                LineChartData(
+                  minY: minY - 5,
+                  maxY: maxY + 5,
+                  titlesData: FlTitlesData(
+                      topTitles: AxisTitles(
+                          axisNameWidget: Text("Wind Speed",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.w700
+                          ),),
+                          axisNameSize: 26),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          getTitlesWidget: (value, meta) {
+                            if (shortTimeSpan!) {
+                              return Transform.rotate(
+                                angle: (pi / 4),
+                                alignment: Alignment.topLeft,
+                                child: Transform.translate(
+                                  offset: Offset(14, -5),
+                                  child: Text(
+                                    DateFormat('MM-dd - HH:00').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            value.toInt())),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Transform.rotate(
+                                angle: (pi / 4),
+                                alignment: Alignment.topLeft,
+                                child: Transform.translate(
+                                  offset: Offset(10, -5),
+                                  child: Text(
+                                    DateFormat('MM-dd').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            value.toInt())),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          reservedSize: shortTimeSpan! ? 75 : 40,
+                          showTitles: true,
+                          maxIncluded: false,
+                          minIncluded: false,
+                        ),
+                      ),
+                      leftTitles: AxisTitles(
+                          axisNameWidget: Text('Speed'),
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 38,
+                            maxIncluded: false,
+                            minIncluded: false,
+                          )),
+                      rightTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 38,
+                        maxIncluded: false,
+                        minIncluded: false,
+                      ))),
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceBright, //pick something better for colors
+                  lineBarsData: [
+                    LineChartBarData(
+                        color: Colors.red,
+                        spots: snapshot.data!,
+                        dotData: FlDotData(show: false))
+                  ],
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+  Widget soilTempGraph() {
+    return Card(
+      color: Theme.of(context).colorScheme.primary,
+      child: FutureBuilder(
+        future: Future.wait([
+          dataSpot('soilTemperature5'),
+          dataSpot('soilTemperature10'),
+          dataSpot('soilTemperature20'),
+          dataSpot('soilTemperature50'),
+          dataSpot('soilTemperature100'),
+        ]),
+        builder: (context, AsyncSnapshot<List<List<FlSpot>>> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            double minY = snapshot.data!.expand((list) => list).map((spot) => spot.y).reduce((a, b) => a < b ? a : b);
+            double maxY = snapshot.data!.expand((list) => list).map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: LineChart(
+                      LineChartData(
+                        minY: minY - 5,
+                        maxY: maxY + 5,
+                        titlesData: FlTitlesData(
+                            topTitles: AxisTitles(
+                                axisNameWidget: Text("Soil Temperature",
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  fontWeight: FontWeight.w700
+                                ),),
+                                axisNameSize: 26),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                getTitlesWidget: (value, meta) {
+                                  if (shortTimeSpan!) {
+                                    return Transform.rotate(
+                                      angle: (pi / 4),
+                                      alignment: Alignment.topLeft,
+                                      child: Transform.translate(
+                                        offset: Offset(14, -5),
+                                        child: Text(
+                                          DateFormat('MM-dd - HH:00').format(
+                                              DateTime.fromMillisecondsSinceEpoch(
+                                                  value.toInt())),
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return Transform.rotate(
+                                      angle: (pi / 4),
+                                      alignment: Alignment.topLeft,
+                                      child: Transform.translate(
+                                        offset: Offset(10, -5),
+                                        child: Text(
+                                          DateFormat('MM-dd').format(
+                                              DateTime.fromMillisecondsSinceEpoch(
+                                                  value.toInt())),
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                reservedSize: shortTimeSpan! ? 75 : 40,
+                                showTitles: true,
+                                maxIncluded: false,
+                                minIncluded: false,
+                              ),
+                            ),
+                            leftTitles: AxisTitles(
+                                axisNameWidget: Text('Temperature'),
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 38,
+                                  maxIncluded: false,
+                                  minIncluded: false,
+                                )),
+                            rightTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 38,
+                              maxIncluded: false,
+                              minIncluded: false,
+                            ))),
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .surfaceBright, //pick something better for colors
+                        lineBarsData: [
+                          LineChartBarData(
+                              color: Colors.red,
+                              spots: snapshot.data![0],
+                              dotData: FlDotData(show: false)),
+                          LineChartBarData(
+                              color: Colors.blue,
+                              spots: snapshot.data![1],
+                              dotData: FlDotData(show: false)),
+                          LineChartBarData(
+                              color: Colors.green,
+                              spots: snapshot.data![2],
+                              dotData: FlDotData(show: false)),
+                          LineChartBarData(
+                              color: Colors.orange,
+                              spots: snapshot.data![3],
+                              dotData: FlDotData(show: false)),
+                          LineChartBarData(
+                              color: Colors.purple,
+                              spots: snapshot.data![4],
+                              dotData: FlDotData(show: false)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        LegendItem(color: Colors.red, text: '5 cm'),
+                        LegendItem(color: Colors.blue, text: '10 cm'),
+                        LegendItem(color: Colors.green, text: '20 cm'),
+                        LegendItem(color: Colors.orange, text: '50 cm'),
+                        LegendItem(color: Colors.purple, text: '100 cm'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+  Widget soilVWCGraph() {
+    return Card(
+      color: Theme.of(context).colorScheme.primary,
+      child: FutureBuilder(
+        future: Future.wait([
+          dataSpot('soilVWC5'),
+          dataSpot('soilVWC10'),
+          dataSpot('soilVWC20'),
+          dataSpot('soilVWC50'),
+          dataSpot('soilVWC100'),
+        ]),
+        builder: (context, AsyncSnapshot<List<List<FlSpot>>> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            double minY = snapshot.data!.expand((list) => list).map((spot) => spot.y).reduce((a, b) => a < b ? a : b);
+            double maxY = snapshot.data!.expand((list) => list).map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: LineChart(
+                      LineChartData(
+                        minY: minY - 5,
+                        maxY: maxY + 5,
+                        titlesData: FlTitlesData(
+                            topTitles: AxisTitles(
+                                axisNameWidget: Text("Soil VWC",
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  fontWeight: FontWeight.w700
+                                ),),
+                                axisNameSize: 26),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                getTitlesWidget: (value, meta) {
+                                  if (shortTimeSpan!) {
+                                    return Transform.rotate(
+                                      angle: (pi / 4),
+                                      alignment: Alignment.topLeft,
+                                      child: Transform.translate(
+                                        offset: Offset(14, -5),
+                                        child: Text(
+                                          DateFormat('MM-dd - HH:00').format(
+                                              DateTime.fromMillisecondsSinceEpoch(
+                                                  value.toInt())),
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return Transform.rotate(
+                                      angle: (pi / 4),
+                                      alignment: Alignment.topLeft,
+                                      child: Transform.translate(
+                                        offset: Offset(10, -5),
+                                        child: Text(
+                                          DateFormat('MM-dd').format(
+                                              DateTime.fromMillisecondsSinceEpoch(
+                                                  value.toInt())),
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                reservedSize: shortTimeSpan! ? 75 : 40,
+                                showTitles: true,
+                                maxIncluded: false,
+                                minIncluded: false,
+                              ),
+                            ),
+                            leftTitles: AxisTitles(
+                                axisNameWidget: Text('VWC '),
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 38,
+                                  maxIncluded: false,
+                                  minIncluded: false,
+                                )),
+                            rightTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 38,
+                              maxIncluded: false,
+                              minIncluded: false,
+                            ))),
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .surfaceBright, //pick something better for colors
+                        lineBarsData: [
+                          LineChartBarData(
+                              color: Colors.red,
+                              spots: snapshot.data![0],
+                              dotData: FlDotData(show: false)),
+                          LineChartBarData(
+                              color: Colors.blue,
+                              spots: snapshot.data![1],
+                              dotData: FlDotData(show: false)),
+                          LineChartBarData(
+                              color: Colors.green,
+                              spots: snapshot.data![2],
+                              dotData: FlDotData(show: false)),
+                          LineChartBarData(
+                              color: Colors.orange,
+                              spots: snapshot.data![3],
+                              dotData: FlDotData(show: false)),
+                          LineChartBarData(
+                              color: Colors.purple,
+                              spots: snapshot.data![4],
+                              dotData: FlDotData(show: false)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        LegendItem(color: Colors.red, text: '5 cm'),
+                        LegendItem(color: Colors.blue, text: '10 cm'),
+                        LegendItem(color: Colors.green, text: '20 cm'),
+                        LegendItem(color: Colors.orange, text: '50 cm'),
+                        LegendItem(color: Colors.purple, text: '100 cm'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+  Widget precipitationGraph() {
+    return Card(
+      color: Theme.of(context).colorScheme.primary,
+      child: FutureBuilder(
+        future: dataSpot('precipitation'),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            double maxY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: BarChart(
+                BarChartData(
+                  minY: 0,
+                  maxY: maxY + 0.05,
+                  titlesData: FlTitlesData(
+                    topTitles: AxisTitles(
+                      axisNameWidget: Text(
+                      "Precipitation",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontWeight: FontWeight.w700),
+                      ),
+                      axisNameSize: 26),
+                    bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                        getTitlesWidget: (value, meta) {
+                        int index = value.toInt();
+                        if (index < snapshot.data!.length) {
+                        double interval = (snapshot.data!.length / 10).ceilToDouble();
+                        int middleIndex = ((index * interval) + (interval / 2)).toInt();
+                        DateTime date = DateTime.fromMillisecondsSinceEpoch(snapshot.data![middleIndex].x.toInt());
+                        if (shortTimeSpan!) {
+                          return Transform.rotate(
+                          angle: (pi / 4),
+                          alignment: Alignment.topLeft,
+                          child: Transform.translate(
+                            offset: Offset(14, -5),
+                            child: Text(
+                            DateFormat('MM-dd - HH:00').format(date),
+                            style: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          );
+                        } else {
+                          return Transform.rotate(
+                          angle: (pi / 4),
+                          alignment: Alignment.topLeft,
+                          child: Transform.translate(
+                            offset: Offset(10, -5),
+                            child: Text(
+                            DateFormat('MM-dd').format(date),
+                            style: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          );
+                        }
+                        } else {
+                        return Container();
+                        }
+                        },
+                      reservedSize: shortTimeSpan! ? 75 : 40,
+                      showTitles: true,
+                      maxIncluded: false,
+                      minIncluded: false,
+                    ),
+                    ),
+                    leftTitles: AxisTitles(
+                      axisNameWidget: Text('Precipitation'),
+                      sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 38,
+                      maxIncluded: false,
+                      minIncluded: false,
+                      )),
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 38,
+                    maxIncluded: false,
+                    minIncluded: false,
+                    ))),
+                  backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .surfaceBright, //pick something better for colors
+                  barGroups: List.generate(10, (i) {
+                  double interval = (snapshot.data!.length / 10).ceilToDouble();
+                  double maxYInInterval = snapshot.data!
+                    .skip((i * interval).toInt())
+                    .take(interval.toInt())
+                    .map((spot) => spot.y)
+                    .reduce((a, b) => a > b ? a : b);
+                  return BarChartGroupData(
+                    x: i,
+                    barRods: [
+                    BarChartRodData(
+                      fromY: 0,
+                      toY: maxYInInterval,
+                      color: Colors.blue,
+                    ),
+                    ],
+                  );
+                  }),
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget LegendItem({required Color color, required String text}) {
+    return Row(
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          color: color,
+        ),
+        SizedBox(width: 5),
+        Text(text, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+      ],
+    );
   }
 
   @override
@@ -328,39 +999,12 @@ class _ChartmanagerState extends State<Chartmanager> {
       ),
       //Call charts from list above
       body: GridView.count(crossAxisCount: 1, children: [
-        FutureBuilder(
-          future: dataSpot(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: LineChart(
-                  LineChartData(
-                      titlesData: FlTitlesData(
-                          topTitles: AxisTitles(
-                              axisNameWidget: Text("Air Temperature")),
-                          bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 38,
-                            maxIncluded: false,
-                          ))),
-                      backgroundColor: Theme.of(context)
-                          .colorScheme
-                          .surfaceBright, //pick something better for colors
-                      lineBarsData: [
-                        LineChartBarData(
-                            color: Colors.red,
-                            spots: snapshot.data!,
-                            dotData: FlDotData(show: false))
-                      ]),
-                ),
-              );
-            }
-          },
-        ),
+        if (airTemperature!) airTempGraph(),
+
+        if (precipitation!) precipitationGraph(),
+        if (windSpeed!) windSpeedGraph(),
+        if (soilTemperature!) soilTempGraph(),
+        if (soilVWC!) soilVWCGraph(),
       ]),
     );
   }

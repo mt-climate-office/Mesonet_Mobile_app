@@ -29,7 +29,7 @@ class Data {
     double? snowDepth;
 
     Data({
-      required this.datetime,
+      this.datetime,
       this.airTemperature,
       this.Precipitation,
       this.maxPrecipRate,
