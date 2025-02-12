@@ -176,7 +176,7 @@ class _PrecipState extends State<Precip> {
           
                     );
         } else {
-          return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
         }
       },
     );

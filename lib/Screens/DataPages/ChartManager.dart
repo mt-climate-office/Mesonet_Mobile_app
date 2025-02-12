@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:app_001/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
@@ -72,7 +73,7 @@ class _ChartmanagerState extends State<Chartmanager> {
       days.add(temp);
     }
     setState(() {
-      if (days.length > 7) {
+      if (days.length > 15) {
         shortTimeSpan = false;
       } else {
         shortTimeSpan = true;
@@ -86,8 +87,12 @@ class _ChartmanagerState extends State<Chartmanager> {
   String parseURL() {
     List<String> dayArr = calculateDaysInterval(
         _selectedDateRange!.start, _selectedDateRange!.end);
+    if (shortTimeSpan!) {
+      return 'https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${dayArr.join(',')}&premade=true&rm_na=true';
+    } else {
+      return 'https://mesonet.climate.umt.edu/api/v2/observations/daily/?type=json&stations=${widget.id}&dates=${dayArr.join(',')}&premade=true&rm_na=true';
+    }
     //print('Parsed URL: https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${f.format(_selectedDateRange!.start)},${f.format(_selectedDateRange!.end)}&premade=true');
-    return 'https://mesonet.climate.umt.edu/api/v2/observations/hourly/?type=json&stations=${widget.id}&dates=${dayArr.join(',')}&premade=true';
   }
 
   //returns a list of data entries following standard json format.
@@ -300,72 +305,176 @@ class _ChartmanagerState extends State<Chartmanager> {
     for (int i = 0; i < data.length; i++) {
       //  int x = data[i].datetime ?? 0;   //This is currently not used. consider breaking into different area?
       double y = 0;
+      bool null_hit = false;
+
       switch (param) {
         case 'airTemperature':
-          y = data[i].airTemperature ?? 0;
+          if (data[i].airTemperature == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].airTemperature!;
+          }
           break;
         case 'atmosphericPressure':
-          y = data[i].atmosphericPressure ?? 0;
+          if (data[i].atmosphericPressure == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].atmosphericPressure!;
+          }
           break;
         case 'gustSpeed':
-          y = data[i].gustSpeed ?? 0;
+          if (data[i].gustSpeed == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].gustSpeed!;
+          }
           break;
         case 'maxPrecipRate':
-          y = data[i].maxPrecipRate ?? 0;
+          if (data[i].maxPrecipRate == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].maxPrecipRate!;
+          }
           break;
         case 'precipitation':
-          y = data[i].Precipitation ?? 0;
+          if (data[i].Precipitation == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].Precipitation!;
+          }
           break;
         case 'relativeHumidity':
-          y = data[i].relativeHumidity ?? 0;
+          if (data[i].relativeHumidity == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].relativeHumidity!;
+          }
           break;
         case 'snowDepth':
-          y = data[i].snowDepth ?? 0;
+          if (data[i].snowDepth == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].snowDepth!;
+          }
           break;
         case 'soilTemperature5':
-          y = data[i].soilTemperature5 ?? 0;
+          if (data[i].soilTemperature5 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilTemperature5!;
+          }
           break;
         case 'soilTemperature10':
-          y = data[i].soilTemperature10 ?? 0;
+          if (data[i].soilTemperature10 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilTemperature10!;
+          }
           break;
         case 'soilTemperature20':
-          y = data[i].soilTemperature20 ?? 0;
+          if (data[i].soilTemperature20 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilTemperature20!;
+          }
           break;
         case 'soilTemperature50':
-          y = data[i].soilTemperature50 ?? 0;
+          if (data[i].soilTemperature50 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilTemperature50!;
+          }
           break;
         case 'soilTemperature100':
-          y = data[i].soilTemperature100 ?? 0;
+          if (data[i].soilTemperature100 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilTemperature100!;
+          }
           break;
         case 'soilVWC5':
-          y = data[i].soilVWC5 ?? 0;
+          if (data[i].soilVWC5 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilVWC5!;
+          }
           break;
         case 'soilVWC10':
-          y = data[i].soilVWC10 ?? 0;
+          if (data[i].soilVWC10 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilVWC10!;
+          }
           break;
         case 'soilVWC20':
-          y = data[i].soilVWC20 ?? 0;
+          if (data[i].soilVWC20 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilVWC20!;
+          }
           break;
         case 'soilVWC50':
-          y = data[i].soilVWC50 ?? 0;
+          if (data[i].soilVWC50 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilVWC50!;
+          }
           break;
         case 'soilVWC100':
-          y = data[i].soilVWC100 ?? 0;
+          if (data[i].soilVWC100 == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].soilVWC100!;
+          }
           break;
         case 'solarRadiation':
-          y = data[i].solarRadiation ?? 0;
+          if (data[i].solarRadiation == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].solarRadiation!;
+          }
           break;
         case 'windDirection':
-          y = data[i].windDirection ?? 0;
+          if (data[i].windDirection == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].windDirection!;
+          }
           break;
         case 'windSpeed':
-          y = data[i].windSpeed ?? 0;
+          if (data[i].windSpeed == null) {
+            null_hit = true;
+            break;
+          } else {
+            y = data[i].windSpeed!;
+          }
           break;
-        default:
-          y = 0;
+        // default:
+        //   y = 0;
       }
 
-      airTemperatureSpotList.add(FlSpot(data[i].datetime!.toDouble(), y));
+      if (!null_hit) {
+        airTemperatureSpotList.add(FlSpot(data[i].datetime!.toDouble(), y));
+      }
     }
     return airTemperatureSpotList;
   }
@@ -394,10 +503,14 @@ class _ChartmanagerState extends State<Chartmanager> {
         future: dataSpot('airTemperature'),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
           } else {
-            double minY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a < b ? a : b);
-            double maxY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            double minY = snapshot.data!
+                .map((spot) => spot.y)
+                .reduce((a, b) => a < b ? a : b);
+            double maxY = snapshot.data!
+                .map((spot) => spot.y)
+                .reduce((a, b) => a > b ? a : b);
             return Padding(
               padding: const EdgeInsets.all(5.0),
               child: LineChart(
@@ -406,11 +519,12 @@ class _ChartmanagerState extends State<Chartmanager> {
                   maxY: maxY + 5,
                   titlesData: FlTitlesData(
                       topTitles: AxisTitles(
-                          axisNameWidget: Text("Air Temperature",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.w700
-                          ),),
+                          axisNameWidget: Text(
+                            "Air Temperature",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w700),
+                          ),
                           axisNameSize: 26),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
@@ -452,7 +566,12 @@ class _ChartmanagerState extends State<Chartmanager> {
                         ),
                       ),
                       leftTitles: AxisTitles(
-                          axisNameWidget: Text('Temperature'),
+                          axisNameWidget: Text(
+                            'Temperature [°F]',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w500),
+                          ),
                           sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 38,
@@ -475,6 +594,60 @@ class _ChartmanagerState extends State<Chartmanager> {
                         spots: snapshot.data!,
                         dotData: FlDotData(show: false))
                   ],
+                  lineTouchData: LineTouchData(
+                          touchTooltipData: LineTouchTooltipData(
+                            getTooltipItems: (touchedSpots) {
+                              int count = 0;
+                              if (touchedSpots.isEmpty) {
+                                return [];
+                              }
+                              return touchedSpots.map((touchedSpot) {
+                                final textStyle = TextStyle(
+                                  color: touchedSpot.bar.color,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                );
+                                final date = shortTimeSpan!
+                                  ? DateFormat('MM-dd - HH:00').format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      touchedSpot.x.toInt()))
+                                  : DateFormat('MM-dd-yyyy').format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      touchedSpot.x.toInt()));
+                                final value = touchedSpot.y;
+
+                                LineTooltipItem first = LineTooltipItem(
+                                  '$date\n',
+                                  TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '$value °F',
+                                      style: textStyle,
+                                    )
+                                  ],
+                                );
+
+                                if (count == 0) {
+                                  count++;
+                                  return first;
+                                } else {
+                                  return LineTooltipItem(
+                                    '$value °F',
+                                    textStyle,
+                                  );
+                                }
+                              }).toList();
+                            },
+                          ),
+                          touchCallback: (FlTouchEvent event,
+                              LineTouchResponse? touchResponse) {},
+                          handleBuiltInTouches: true,
+                        ),
                 ),
               ),
             );
@@ -483,6 +656,7 @@ class _ChartmanagerState extends State<Chartmanager> {
       ),
     );
   }
+
   Widget windSpeedGraph() {
     return Card(
       color: Theme.of(context).colorScheme.primary,
@@ -490,23 +664,25 @@ class _ChartmanagerState extends State<Chartmanager> {
         future: dataSpot('windSpeed'),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
           } else {
-            double minY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a < b ? a : b);
-            double maxY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            double maxY = snapshot.data!
+                .map((spot) => spot.y)
+                .reduce((a, b) => a > b ? a : b);
             return Padding(
               padding: const EdgeInsets.all(5.0),
               child: LineChart(
                 LineChartData(
-                  minY: minY - 5,
-                  maxY: maxY + 5,
+                  minY: 0,
+                  maxY: maxY + 1,
                   titlesData: FlTitlesData(
                       topTitles: AxisTitles(
-                          axisNameWidget: Text("Wind Speed",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.w700
-                          ),),
+                          axisNameWidget: Text(
+                            "Wind Speed",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w700),
+                          ),
                           axisNameSize: 26),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
@@ -548,7 +724,12 @@ class _ChartmanagerState extends State<Chartmanager> {
                         ),
                       ),
                       leftTitles: AxisTitles(
-                          axisNameWidget: Text('Speed'),
+                          axisNameWidget: Text(
+                            'Speed [MPH]',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w500),
+                          ),
                           sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 38,
@@ -579,6 +760,7 @@ class _ChartmanagerState extends State<Chartmanager> {
       ),
     );
   }
+
   Widget soilTempGraph() {
     return Card(
       color: Theme.of(context).colorScheme.primary,
@@ -592,10 +774,16 @@ class _ChartmanagerState extends State<Chartmanager> {
         ]),
         builder: (context, AsyncSnapshot<List<List<FlSpot>>> snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
           } else {
-            double minY = snapshot.data!.expand((list) => list).map((spot) => spot.y).reduce((a, b) => a < b ? a : b);
-            double maxY = snapshot.data!.expand((list) => list).map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            double minY = snapshot.data!
+                .expand((list) => list)
+                .map((spot) => spot.y)
+                .reduce((a, b) => a < b ? a : b);
+            double maxY = snapshot.data!
+                .expand((list) => list)
+                .map((spot) => spot.y)
+                .reduce((a, b) => a > b ? a : b);
             return Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
@@ -607,11 +795,14 @@ class _ChartmanagerState extends State<Chartmanager> {
                         maxY: maxY + 5,
                         titlesData: FlTitlesData(
                             topTitles: AxisTitles(
-                                axisNameWidget: Text("Soil Temperature",
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                  fontWeight: FontWeight.w700
-                                ),),
+                                axisNameWidget: Text(
+                                  "Soil Temperature",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      fontWeight: FontWeight.w700),
+                                ),
                                 axisNameSize: 26),
                             bottomTitles: AxisTitles(
                               sideTitles: SideTitles(
@@ -624,8 +815,9 @@ class _ChartmanagerState extends State<Chartmanager> {
                                         offset: Offset(14, -5),
                                         child: Text(
                                           DateFormat('MM-dd - HH:00').format(
-                                              DateTime.fromMillisecondsSinceEpoch(
-                                                  value.toInt())),
+                                              DateTime
+                                                  .fromMillisecondsSinceEpoch(
+                                                      value.toInt())),
                                           style: TextStyle(fontSize: 12),
                                         ),
                                       ),
@@ -637,8 +829,8 @@ class _ChartmanagerState extends State<Chartmanager> {
                                       child: Transform.translate(
                                         offset: Offset(10, -5),
                                         child: Text(
-                                          DateFormat('MM-dd').format(
-                                              DateTime.fromMillisecondsSinceEpoch(
+                                          DateFormat('MM-dd').format(DateTime
+                                              .fromMillisecondsSinceEpoch(
                                                   value.toInt())),
                                           style: TextStyle(fontSize: 12),
                                         ),
@@ -653,7 +845,14 @@ class _ChartmanagerState extends State<Chartmanager> {
                               ),
                             ),
                             leftTitles: AxisTitles(
-                                axisNameWidget: Text('Temperature'),
+                                axisNameWidget: Text(
+                                  'Temperature [°F]',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      fontWeight: FontWeight.w500),
+                                ),
                                 sideTitles: SideTitles(
                                   showTitles: true,
                                   reservedSize: 38,
@@ -692,6 +891,60 @@ class _ChartmanagerState extends State<Chartmanager> {
                               spots: snapshot.data![4],
                               dotData: FlDotData(show: false)),
                         ],
+                        lineTouchData: LineTouchData(
+                          touchTooltipData: LineTouchTooltipData(
+                            getTooltipItems: (touchedSpots) {
+                              int count = 0;
+                              if (touchedSpots.isEmpty) {
+                                return [];
+                              }
+                              return touchedSpots.map((touchedSpot) {
+                                final textStyle = TextStyle(
+                                  color: touchedSpot.bar.color,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                );
+                                final date = shortTimeSpan!
+                                  ? DateFormat('MM-dd - HH:00').format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      touchedSpot.x.toInt()))
+                                  : DateFormat('MM-dd-yyyy').format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      touchedSpot.x.toInt()));
+                                final value = touchedSpot.y;
+
+                                LineTooltipItem first = LineTooltipItem(
+                                  '$date\n',
+                                  TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '$value °F',
+                                      style: textStyle,
+                                    )
+                                  ],
+                                );
+
+                                if (count == 0) {
+                                  count++;
+                                  return first;
+                                } else {
+                                  return LineTooltipItem(
+                                    '$value °F',
+                                    textStyle,
+                                  );
+                                }
+                              }).toList();
+                            },
+                          ),
+                          touchCallback: (FlTouchEvent event,
+                              LineTouchResponse? touchResponse) {},
+                          handleBuiltInTouches: true,
+                        ),
                       ),
                     ),
                   ),
@@ -716,6 +969,7 @@ class _ChartmanagerState extends State<Chartmanager> {
       ),
     );
   }
+
   Widget soilVWCGraph() {
     return Card(
       color: Theme.of(context).colorScheme.primary,
@@ -729,10 +983,16 @@ class _ChartmanagerState extends State<Chartmanager> {
         ]),
         builder: (context, AsyncSnapshot<List<List<FlSpot>>> snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
           } else {
-            double minY = snapshot.data!.expand((list) => list).map((spot) => spot.y).reduce((a, b) => a < b ? a : b);
-            double maxY = snapshot.data!.expand((list) => list).map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            double minY = snapshot.data!
+                .expand((list) => list)
+                .map((spot) => spot.y)
+                .reduce((a, b) => a < b ? a : b);
+            double maxY = snapshot.data!
+                .expand((list) => list)
+                .map((spot) => spot.y)
+                .reduce((a, b) => a > b ? a : b);
             return Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
@@ -744,11 +1004,14 @@ class _ChartmanagerState extends State<Chartmanager> {
                         maxY: maxY + 5,
                         titlesData: FlTitlesData(
                             topTitles: AxisTitles(
-                                axisNameWidget: Text("Soil VWC",
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                  fontWeight: FontWeight.w700
-                                ),),
+                                axisNameWidget: Text(
+                                  "Soil VWC",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      fontWeight: FontWeight.w700),
+                                ),
                                 axisNameSize: 26),
                             bottomTitles: AxisTitles(
                               sideTitles: SideTitles(
@@ -761,8 +1024,9 @@ class _ChartmanagerState extends State<Chartmanager> {
                                         offset: Offset(14, -5),
                                         child: Text(
                                           DateFormat('MM-dd - HH:00').format(
-                                              DateTime.fromMillisecondsSinceEpoch(
-                                                  value.toInt())),
+                                              DateTime
+                                                  .fromMillisecondsSinceEpoch(
+                                                      value.toInt())),
                                           style: TextStyle(fontSize: 12),
                                         ),
                                       ),
@@ -774,8 +1038,8 @@ class _ChartmanagerState extends State<Chartmanager> {
                                       child: Transform.translate(
                                         offset: Offset(10, -5),
                                         child: Text(
-                                          DateFormat('MM-dd').format(
-                                              DateTime.fromMillisecondsSinceEpoch(
+                                          DateFormat('MM-dd').format(DateTime
+                                              .fromMillisecondsSinceEpoch(
                                                   value.toInt())),
                                           style: TextStyle(fontSize: 12),
                                         ),
@@ -790,7 +1054,14 @@ class _ChartmanagerState extends State<Chartmanager> {
                               ),
                             ),
                             leftTitles: AxisTitles(
-                                axisNameWidget: Text('VWC '),
+                                axisNameWidget: Text(
+                                  'VWC %',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      fontWeight: FontWeight.w500),
+                                ),
                                 sideTitles: SideTitles(
                                   showTitles: true,
                                   reservedSize: 38,
@@ -829,6 +1100,60 @@ class _ChartmanagerState extends State<Chartmanager> {
                               spots: snapshot.data![4],
                               dotData: FlDotData(show: false)),
                         ],
+                        lineTouchData: LineTouchData(
+                          touchTooltipData: LineTouchTooltipData(
+                            getTooltipItems: (touchedSpots) {
+                              int count = 0;
+                              if (touchedSpots.isEmpty) {
+                                return [];
+                              }
+                              return touchedSpots.map((touchedSpot) {
+                                final textStyle = TextStyle(
+                                  color: touchedSpot.bar.color,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                );
+                                final date = shortTimeSpan!
+                                  ? DateFormat('MM-dd - HH:00').format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      touchedSpot.x.toInt()))
+                                  : DateFormat('MM-dd-yyyy').format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      touchedSpot.x.toInt()));
+                                final value = touchedSpot.y;
+
+                                LineTooltipItem first = LineTooltipItem(
+                                  '$date\n',
+                                  TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '$value %',
+                                      style: textStyle,
+                                    )
+                                  ],
+                                );
+
+                                if (count == 0) {
+                                  count++;
+                                  return first;
+                                } else {
+                                  return LineTooltipItem(
+                                    '$value %',
+                                    textStyle,
+                                  );
+                                }
+                              }).toList();
+                            },
+                          ),
+                          touchCallback: (FlTouchEvent event,
+                              LineTouchResponse? touchResponse) {},
+                          handleBuiltInTouches: true,
+                        ),
                       ),
                     ),
                   ),
@@ -853,6 +1178,166 @@ class _ChartmanagerState extends State<Chartmanager> {
       ),
     );
   }
+  Widget atmosphericPressureGraph() {
+    return Card(
+      color: Theme.of(context).colorScheme.primary,
+      child: FutureBuilder(
+        future: dataSpot('atmosphericPressure'),
+        builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
+          } else {
+            double minY = snapshot.data!
+                .map((spot) => spot.y)
+                .reduce((a, b) => a < b ? a : b);
+            double maxY = snapshot.data!
+                .map((spot) => spot.y)
+                .reduce((a, b) => a > b ? a : b);
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: LineChart(
+                LineChartData(
+                  minY: minY - 5,
+                  maxY: maxY + 5,
+                  titlesData: FlTitlesData(
+                      topTitles: AxisTitles(
+                          axisNameWidget: Text(
+                            "Atmospheric Pressure",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          axisNameSize: 26),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          getTitlesWidget: (value, meta) {
+                            if (shortTimeSpan!) {
+                              return Transform.rotate(
+                                angle: (pi / 4),
+                                alignment: Alignment.topLeft,
+                                child: Transform.translate(
+                                  offset: Offset(14, -5),
+                                  child: Text(
+                                    DateFormat('MM-dd - HH:00').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            value.toInt())),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Transform.rotate(
+                                angle: (pi / 4),
+                                alignment: Alignment.topLeft,
+                                child: Transform.translate(
+                                  offset: Offset(10, -5),
+                                  child: Text(
+                                    DateFormat('MM-dd').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            value.toInt())),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          reservedSize: shortTimeSpan! ? 75 : 40,
+                          showTitles: true,
+                          maxIncluded: false,
+                          minIncluded: false,
+                        ),
+                      ),
+                      leftTitles: AxisTitles(
+                          axisNameWidget: Text(
+                            'Pressure [hPa]',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 38,
+                            maxIncluded: false,
+                            minIncluded: false,
+                          )),
+                      rightTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 38,
+                        maxIncluded: false,
+                        minIncluded: false,
+                      ))),
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceBright, //pick something better for colors
+                  lineBarsData: [
+                    LineChartBarData(
+                        color: Colors.red,
+                        spots: snapshot.data!,
+                        dotData: FlDotData(show: false))
+                  ],
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipItems: (touchedSpots) {
+                        int count = 0;
+                        if (touchedSpots.isEmpty) {
+                          return [];
+                        }
+                        return touchedSpots.map((touchedSpot) {
+                          final textStyle = TextStyle(
+                            color: touchedSpot.bar.color,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          );
+                          final date = shortTimeSpan!
+                              ? DateFormat('MM-dd - HH:00').format(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      touchedSpot.x.toInt()))
+                              : DateFormat('MM-dd-yyyy').format(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      touchedSpot.x.toInt()));
+                          final value = touchedSpot.y;
+
+                          LineTooltipItem first = LineTooltipItem(
+                            '$date\n',
+                            TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: '$value hPa',
+                                style: textStyle,
+                              )
+                            ],
+                          );
+
+                          if (count == 0) {
+                            count++;
+                            return first;
+                          } else {
+                            return LineTooltipItem(
+                              '$value hPa',
+                              textStyle,
+                            );
+                          }
+                        }).toList();
+                      },
+                    ),
+                    touchCallback: (FlTouchEvent event,
+                        LineTouchResponse? touchResponse) {},
+                    handleBuiltInTouches: true,
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
   Widget precipitationGraph() {
     return Card(
       color: Theme.of(context).colorScheme.primary,
@@ -860,102 +1345,114 @@ class _ChartmanagerState extends State<Chartmanager> {
         future: dataSpot('precipitation'),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
           } else {
-            double maxY = snapshot.data!.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+            double maxY =
+                snapshot.data!.map((spot) => spot.y).reduce((a, b) => a + b);
             return Padding(
               padding: const EdgeInsets.all(5.0),
               child: BarChart(
                 BarChartData(
                   minY: 0,
-                  maxY: maxY + 0.05,
+                  maxY: maxY,
                   titlesData: FlTitlesData(
-                    topTitles: AxisTitles(
-                      axisNameWidget: Text(
-                      "Precipitation",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontWeight: FontWeight.w700),
+                      topTitles: AxisTitles(
+                          axisNameWidget: Text(
+                            "Precipitation",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          axisNameSize: 26),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          getTitlesWidget: (value, meta) {
+                            int index = value.toInt();
+                            if (index < snapshot.data!.length) {
+                              double interval =
+                                  (snapshot.data!.length / 10).ceilToDouble();
+                              int middleIndex =
+                                  ((index * interval) + (interval / 2)).toInt();
+                              DateTime date =
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      snapshot.data![middleIndex].x.toInt());
+                              if (shortTimeSpan!) {
+                                return Transform.rotate(
+                                  angle: (pi / 4),
+                                  alignment: Alignment.topLeft,
+                                  child: Transform.translate(
+                                    offset: Offset(14, -5),
+                                    child: Text(
+                                      DateFormat('MM-dd - HH:00').format(date),
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return Transform.rotate(
+                                  angle: (pi / 4),
+                                  alignment: Alignment.topLeft,
+                                  child: Transform.translate(
+                                    offset: Offset(10, -5),
+                                    child: Text(
+                                      DateFormat('MM-dd').format(date),
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                );
+                              }
+                            } else {
+                              return Container();
+                            }
+                          },
+                          reservedSize: shortTimeSpan! ? 75 : 40,
+                          showTitles: true,
+                          maxIncluded: false,
+                          minIncluded: false,
+                        ),
                       ),
-                      axisNameSize: 26),
-                    bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                        getTitlesWidget: (value, meta) {
-                        int index = value.toInt();
-                        if (index < snapshot.data!.length) {
-                        double interval = (snapshot.data!.length / 10).ceilToDouble();
-                        int middleIndex = ((index * interval) + (interval / 2)).toInt();
-                        DateTime date = DateTime.fromMillisecondsSinceEpoch(snapshot.data![middleIndex].x.toInt());
-                        if (shortTimeSpan!) {
-                          return Transform.rotate(
-                          angle: (pi / 4),
-                          alignment: Alignment.topLeft,
-                          child: Transform.translate(
-                            offset: Offset(14, -5),
-                            child: Text(
-                            DateFormat('MM-dd - HH:00').format(date),
-                            style: TextStyle(fontSize: 12),
-                            ),
+                      leftTitles: AxisTitles(
+                          axisNameWidget: Text(
+                            'Precipitation [in]',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w500),
                           ),
-                          );
-                        } else {
-                          return Transform.rotate(
-                          angle: (pi / 4),
-                          alignment: Alignment.topLeft,
-                          child: Transform.translate(
-                            offset: Offset(10, -5),
-                            child: Text(
-                            DateFormat('MM-dd').format(date),
-                            style: TextStyle(fontSize: 12),
-                            ),
-                          ),
-                          );
-                        }
-                        } else {
-                        return Container();
-                        }
-                        },
-                      reservedSize: shortTimeSpan! ? 75 : 40,
-                      showTitles: true,
-                      maxIncluded: false,
-                      minIncluded: false,
-                    ),
-                    ),
-                    leftTitles: AxisTitles(
-                      axisNameWidget: Text('Precipitation'),
-                      sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 38,
-                      maxIncluded: false,
-                      minIncluded: false,
-                      )),
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 38,
-                    maxIncluded: false,
-                    minIncluded: false,
-                    ))),
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 52,
+                            maxIncluded: false,
+                            minIncluded: false,
+                          )),
+                      rightTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                        showTitles: false,
+                        reservedSize: 48,
+                        maxIncluded: false,
+                        minIncluded: false,
+                      ))),
                   backgroundColor: Theme.of(context)
-                    .colorScheme
-                    .surfaceBright, //pick something better for colors
-                  barGroups: List.generate(10, (i) {
-                  double interval = (snapshot.data!.length / 10).ceilToDouble();
-                  double maxYInInterval = snapshot.data!
-                    .skip((i * interval).toInt())
-                    .take(interval.toInt())
-                    .map((spot) => spot.y)
-                    .reduce((a, b) => a > b ? a : b);
-                  return BarChartGroupData(
-                    x: i,
-                    barRods: [
-                    BarChartRodData(
-                      fromY: 0,
-                      toY: maxYInInterval,
-                      color: Colors.blue,
-                    ),
-                    ],
-                  );
+                      .colorScheme
+                      .surfaceBright, //pick something better for colors
+                  barGroups: List.generate(7, (i) {
+                    double interval =
+                        (snapshot.data!.length / 7).ceilToDouble();
+                    double sumYInInterval = snapshot.data!
+                        .skip((i * interval).toInt())
+                        .take(interval.toInt())
+                        .map((spot) => spot.y)
+                        .reduce((a, b) => a + b);
+                    return BarChartGroupData(
+                      x: i,
+                      barRods: [
+                        BarChartRodData(
+                          fromY: 0,
+                          toY: double.parse(
+                              sumYInInterval.toStringAsPrecision(4)),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ],
+                    );
                   }),
                 ),
               ),
@@ -975,7 +1472,8 @@ class _ChartmanagerState extends State<Chartmanager> {
           color: color,
         ),
         SizedBox(width: 5),
-        Text(text, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+        Text(text,
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
       ],
     );
   }
@@ -1000,11 +1498,11 @@ class _ChartmanagerState extends State<Chartmanager> {
       //Call charts from list above
       body: GridView.count(crossAxisCount: 1, children: [
         if (airTemperature!) airTempGraph(),
-
         if (precipitation!) precipitationGraph(),
         if (windSpeed!) windSpeedGraph(),
         if (soilTemperature!) soilTempGraph(),
         if (soilVWC!) soilVWCGraph(),
+        if (atmosphericPressure!) atmosphericPressureGraph(),
       ]),
     );
   }

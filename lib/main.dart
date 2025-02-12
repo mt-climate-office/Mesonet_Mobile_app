@@ -1,6 +1,7 @@
 import 'package:app_001/Screens/HomeManager.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 
 /*App for the montana climate office
   Built by Jim Seielstad
@@ -64,7 +65,7 @@ const ColorScheme darkColorScheme = ColorScheme(
     error: Colors.redAccent,
     onError: Colors.white,
 
-    surface: Color(0xff575757),
+    surface: Color.fromARGB(255, 150, 150, 150),
     onSurface: Colors.black87,
     
     brightness: Brightness.dark,

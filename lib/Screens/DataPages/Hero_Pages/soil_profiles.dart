@@ -130,36 +130,36 @@ class _soil_profilesState extends State<soil_profiles> {
                     Expanded(
                         child: Container(
                           color: getGradientColors(
-                          (widget.data.soilTemperature5 ?? 0), true),
-                          child: Center(child: Text('${widget.data.soilTemperature5?.toString() ?? 'N/A'}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          (widget.data.soilTemperature10 ?? 0), true),
-                          child: Center(child: Text('${widget.data.soilTemperature10?.toString() ?? 'N/A'}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          (widget.data.soilTemperature20 ?? 0), true),
-                          child: Center(child: Text('${widget.data.soilTemperature20?.toString() ?? 'N/A'}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          (widget.data.soilTemperature50 ?? 0), true),
-                          child: Center(child: Text('${widget.data.soilTemperature50?.toString() ?? 'N/A'}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          (widget.data.soilTemperature100 ?? 0), true),
-                          child: Center(child: Text('${widget.data.soilTemperature100?.toString() ?? 'N/A'}°F',
+                            (widget.data.soilTemperature5 ?? 0), true),
+                            child: Center(child: Text('${(widget.data.soilTemperature5 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature5 ?? 0).toStringAsFixed(2)}°F',
+                            style: TextStyle(fontSize: 10),),),
+                          )),
+                          Expanded(
+                            child: Container(
+                            color: getGradientColors(
+                            (widget.data.soilTemperature10 ?? 0), true),
+                            child: Center(child: Text('${(widget.data.soilTemperature10 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature10 ?? 0).toStringAsFixed(2)}°F',
+                            style: TextStyle(fontSize: 10),),),
+                          )),
+                          Expanded(
+                            child: Container(
+                            color: getGradientColors(
+                            (widget.data.soilTemperature20 ?? 0), true),
+                            child: Center(child: Text('${(widget.data.soilTemperature20 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature20 ?? 0).toStringAsFixed(2)}°F',
+                            style: TextStyle(fontSize: 10),),),
+                          )),
+                          Expanded(
+                            child: Container(
+                            color: getGradientColors(
+                            (widget.data.soilTemperature50 ?? 0), true),
+                            child: Center(child: Text('${(widget.data.soilTemperature50 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature50 ?? 0).toStringAsFixed(2)}°F',
+                            style: TextStyle(fontSize: 10),),),
+                          )),
+                          Expanded(
+                            child: Container(
+                            color: getGradientColors(
+                            (widget.data.soilTemperature100 ?? 0), true),
+                            child: Center(child: Text('${(widget.data.soilTemperature100 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature100 ?? 0).toStringAsFixed(2)}°F',
                           style: TextStyle(fontSize: 10),),),
                     )),
                                     ],
@@ -177,37 +177,37 @@ class _soil_profilesState extends State<soil_profiles> {
                     Expanded(
                         child: Container(
                       color: getGradientColors(
-                          widget.data.soilVWC5 as double, false),
-                          child: Center(child: Text('${widget.data.soilVWC5.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC10 as double, false),
-                          child: Center(child: Text('${widget.data.soilVWC10.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC20 as double, false),
-                          child: Center(child: Text('${widget.data.soilVWC20.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC50 as double, false),
-                          child: Center(child: Text('${widget.data.soilVWC50.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC100 as double, false),
-                          child: Center(child: Text('${widget.data.soilVWC100.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
+                            (widget.data.soilVWC5 ?? 0), false),
+                            child: Center(child: Text('${widget.data.soilVWC5 ?? 'No Data'}%',
+                            style: TextStyle(fontSize: 10),),),
+                          )),
+                          Expanded(
+                            child: Container(
+                            color: getGradientColors(
+                            (widget.data.soilVWC10 ?? 0), false),
+                            child: Center(child: Text('${widget.data.soilVWC10 ?? 'No Data'}%',
+                            style: TextStyle(fontSize: 10),),),
+                          )),
+                          Expanded(
+                            child: Container(
+                            color: getGradientColors(
+                            (widget.data.soilVWC20 ?? 0), false),
+                            child: Center(child: Text('${widget.data.soilVWC20 ?? 'No Data'}%',
+                            style: TextStyle(fontSize: 10),),),
+                          )),
+                          Expanded(
+                            child: Container(
+                            color: getGradientColors(
+                            (widget.data.soilVWC50 ?? 0), false),
+                            child: Center(child: Text('${widget.data.soilVWC50 ?? 'No Data'}%',
+                            style: TextStyle(fontSize: 10),),),
+                          )),
+                          Expanded(
+                            child: Container(
+                            color: getGradientColors(
+                            (widget.data.soilVWC100 ?? 0), false),
+                            child: Center(child: Text('${widget.data.soilVWC100 ?? 'No Data'}%',
+                            style: TextStyle(fontSize: 10),),),
                     )),
                                     ],
                                   ),
