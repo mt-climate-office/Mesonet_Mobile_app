@@ -22,7 +22,7 @@ import 'JSONData.dart';
 
 class Chartmanager extends StatefulWidget {
   final String id;
-  const Chartmanager({super.key, required this.id});
+  const Chartmanager({super.key, required this.id,});
 
   @override
   State<Chartmanager> createState() => _ChartmanagerState();

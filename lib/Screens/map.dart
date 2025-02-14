@@ -84,7 +84,6 @@ class _mapState extends State<map> {
           point: LatLng(station.lat, station.lon),
           child: GestureDetector(
             onTap: () {
-              print('headed to hydromet');
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -101,7 +100,6 @@ class _mapState extends State<map> {
           point: LatLng(station.lat, station.lon),
           child: GestureDetector(
             onTap: () {
-              print('headed to agrimet');
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -282,6 +280,8 @@ class _mapState extends State<map> {
             inactiveTrackColor: agrimetStations.color,
           ),
               ),
+
+              
             ],
           ),
         ),

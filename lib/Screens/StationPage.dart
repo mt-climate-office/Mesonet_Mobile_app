@@ -35,22 +35,21 @@ class _HydroStationPageState extends State<HydroStationPage> {
     if (hydroBool == 1) {
       _pages = [
         Forcast(lat: widget.station.lat, lng: widget.station.lon), //setting pages
-        CurrentDataPretty(id: id),
+        CurrentDataPretty(id: id, lat: widget.station.lat, lng: widget.station.lon, isHydromet: true),
         Chartmanager(id: id),
         //PhotoPage(id: id),
       ];
     } else {
       _pages = [
-        //Forcast(lat: widget.station.lat, lng: widget.station.lon),
-        //CurrentDataPretty(id: id),
-        testPage(),
-        //Chartmanager(id: id),
+        Forcast(lat: widget.station.lat, lng: widget.station.lon),
+        CurrentDataPretty(id: id, lat: widget.station.lat, lng: widget.station.lon, isHydromet: false,),
+        Chartmanager(id: id),
       ];
     }
   }
 
   final _pageController = PageController(
-    initialPage: 1, //initial page for the marker
+    initialPage: 1, //initial page for the marker. index starts at 0 and follows the lists above. Don't index out of range for the shorter list
     viewportFraction: 1,
   );
 
@@ -135,11 +134,3 @@ void dispose() {
   }
 }
 
-class testPage extends StatelessWidget {
-  const testPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('test page'));
-  }
-}
