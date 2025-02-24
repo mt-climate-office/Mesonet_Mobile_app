@@ -3,11 +3,12 @@ import 'package:app_001/main.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
+import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'JSONData.dart';
 import 'Hero_Pages/Alerts.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
-import 'package:app_001/Screens/DataPages/ChartManager.dart';
+
 
 class CurrentDataPretty extends StatefulWidget {
   final String id;
@@ -36,6 +37,20 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
     _animationController.forward();
     _dataFuture = getData(
         'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}');
+    _dataFuture.then((value) {
+      if (!isCurrentDate(value.datetime!) && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Center(
+      child: Text(
+      'Data is not up to date! Shown data is from ${DateFormat('MM/dd/yyyy').format(DateTime.fromMillisecondsSinceEpoch(value.datetime!))} which is the latest available data.',
+      textAlign: TextAlign.center,
+      ),
+    ),
+    duration: const Duration(seconds: 7),
+  ),
+  );
+      }
+    });
   }
 
   @override
@@ -59,15 +74,25 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
     return dataList;
   }
 
+
+  bool isCurrentDate(int dateFromData){
+    DateTime now = DateTime.now();
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(dateFromData);
+    
+    return now.day == date.day && now.month == date.month && now.year == date.year;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: FutureBuilder(
         future: _dataFuture,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(child: Text('Error'));
           } else if (snapshot.hasData) {
+
             return Column(
               children: [
                 widget.isHydromet
@@ -356,6 +381,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                 ),
               ],
             );
+            
           } else {
             return Center(child: const CircularProgressIndicator());
           }
