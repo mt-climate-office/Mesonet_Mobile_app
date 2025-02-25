@@ -6,13 +6,15 @@ import 'package:app_001/main.dart';
 
 class Precip extends StatefulWidget {
   final String id;
-  const Precip({required this.id,super.key});
+    final bool isHydromet; 
+  const Precip({required this.id,required this.isHydromet,super.key});
 
   @override
   State<Precip> createState() => _PrecipState();
 }
-
+ 
 class _PrecipState extends State<Precip> {
+// Define the variable
 
   @override
   void initState() {
@@ -35,7 +37,9 @@ class _PrecipState extends State<Precip> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return widget.isHydromet  // avoid the derived call for agrimet stations
+
+    ? FutureBuilder(
       future: getData('https://mesonet.climate.umt.edu/api/v2/derived/ppt/?type=json&stations=${widget.id}'),
       builder: (context, snapshot) {
         if(snapshot.hasError){
@@ -179,6 +183,8 @@ class _PrecipState extends State<Precip> {
             return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
         }
       },
-    );
+      
+    ) //Switch case for agrimet stations. Have to derive the precip manually
+    : const Text('No Precip Data Available');
   }
 }

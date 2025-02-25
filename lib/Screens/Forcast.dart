@@ -10,8 +10,9 @@ typedef TodaysForcastIconCallback = void Function(BoxedIcon icon);
 class Forcast extends StatefulWidget {
   final double lat;
   final double lng;
+  final bool isHydromet;
   // final Function(BoxedIcon) getTodaysForcastIcon;
-  const Forcast({super.key, required this.lat, required this.lng, });
+  const Forcast({super.key, required this.lat, required this.lng,required this.isHydromet});
 
   @override
   State<Forcast> createState() => _ForcastState();
@@ -71,7 +72,9 @@ class _ForcastState extends State<Forcast> {
         height: 50,
         width: MediaQuery.of(context).size.width/2,
         child: Card(
-          color: Theme.of(context).colorScheme.primary,
+          color: widget.isHydromet
+                          ?Theme.of(context).colorScheme.primary
+                          :Theme.of(context).colorScheme.secondary,
           child: Center(
             child: Text('Weekly Forecast',
             style: TextStyle(
@@ -101,7 +104,9 @@ class _ForcastState extends State<Forcast> {
                     return SizedBox(height: 25); // Padding at the bottom of the list
                   }
                   return Card(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: widget.isHydromet
+                          ?Theme.of(context).colorScheme.primary
+                          :Theme.of(context).colorScheme.secondary,
                     child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Row(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:app_001/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
@@ -22,7 +21,12 @@ import 'JSONData.dart';
 
 class Chartmanager extends StatefulWidget {
   final String id;
-  const Chartmanager({super.key, required this.id,});
+  final bool isHydromet;
+  const Chartmanager({
+    super.key,
+    required this.isHydromet,
+    required this.id,
+  });
 
   @override
   State<Chartmanager> createState() => _ChartmanagerState();
@@ -104,7 +108,7 @@ class _ChartmanagerState extends State<Chartmanager> {
     try {
       response = await flutterCompute(apiCall, url);
     } catch (e) {
-      print('Error: $e');
+      print(e);
     }
 
     List<dynamic> dataMap = jsonDecode(response);
@@ -127,7 +131,9 @@ class _ChartmanagerState extends State<Chartmanager> {
         style: TextStyle(fontWeight: FontWeight.w800),
       ),
       trailing: MaterialButton(
-        color: Theme.of(context).colorScheme.primary,
+        color: widget.isHydromet
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.secondary,
         onPressed: _show,
         child: Icon(Icons.date_range),
       ),
@@ -136,6 +142,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Air Temperature'),
       value: airTemperature,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           airTemperature = value;
@@ -146,6 +155,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Atmospheric Pressure'),
       value: atmosphericPressure,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           atmosphericPressure = value;
@@ -156,6 +168,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Bulk EC'),
       value: bulkEC,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           bulkEC = value;
@@ -166,6 +181,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Gust Speed'),
       value: gustSpeed,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           gustSpeed = value;
@@ -176,6 +194,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Maximum Precipitation Rate'),
       value: maxPrecipRate,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           maxPrecipRate = value;
@@ -186,6 +207,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Precipitation'),
       value: precipitation,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           precipitation = value;
@@ -196,6 +220,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Reference ET'),
       value: referenceET,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           referenceET = value;
@@ -206,6 +233,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Relative Humidity'),
       value: relativeHumidity,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           relativeHumidity = value;
@@ -216,6 +246,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Snow Depth'),
       value: snowDepth,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           snowDepth = value;
@@ -226,6 +259,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Soil Temperature'),
       value: soilTemperature,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           soilTemperature = value;
@@ -236,6 +272,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Soil Volumetric Water Content'),
       value: soilVWC,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           soilVWC = value;
@@ -246,6 +285,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Solar Radiation'),
       value: solarRadiation,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           solarRadiation = value;
@@ -256,6 +298,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Wind Direction'),
       value: windDirection,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           windDirection = value;
@@ -266,6 +311,9 @@ class _ChartmanagerState extends State<Chartmanager> {
     checklist.add(CheckboxListTile(
       title: Text('Wind Speed'),
       value: windSpeed,
+      activeColor: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       onChanged: (bool? value) {
         setState(() {
           windSpeed = value;
@@ -285,6 +333,9 @@ class _ChartmanagerState extends State<Chartmanager> {
       lastDate: DateTime.now(),
       currentDate: DateTime.now(),
       saveText: 'Done',
+      helpText: "Select a date range",
+      cancelText: 'Cancel',
+      confirmText: 'Select',
     );
 
     if (result != null) {
@@ -485,8 +536,7 @@ class _ChartmanagerState extends State<Chartmanager> {
     double y = 0;
 
     for (int i = 0; i < dataList.length; i++) {
-      String x =
-          DateFormat('yyyy-MM-dd').format(dataList[i].datetime as DateTime);
+      DateFormat('yyyy-MM-dd').format(dataList[i].datetime as DateTime);
       DateTime date = DateTime.parse(dataList[i].datetime as String);
       y = dataList[i].airTemperature ?? 0;
       spotList.add(FlSpot(
@@ -498,12 +548,16 @@ class _ChartmanagerState extends State<Chartmanager> {
 
   Widget airTempGraph() {
     return Card(
-      color: Theme.of(context).colorScheme.primary,
+      color: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       child: FutureBuilder(
         future: dataSpot('airTemperature'),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
+            return Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary));
           } else {
             double minY = snapshot.data!
                 .map((spot) => spot.y)
@@ -595,59 +649,58 @@ class _ChartmanagerState extends State<Chartmanager> {
                         dotData: FlDotData(show: false))
                   ],
                   lineTouchData: LineTouchData(
-                          touchTooltipData: LineTouchTooltipData(
-                            getTooltipItems: (touchedSpots) {
-                              int count = 0;
-                              if (touchedSpots.isEmpty) {
-                                return [];
-                              }
-                              return touchedSpots.map((touchedSpot) {
-                                final textStyle = TextStyle(
-                                  color: touchedSpot.bar.color,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                );
-                                final date = shortTimeSpan!
-                                  ? DateFormat('MM-dd - HH:00').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipItems: (touchedSpots) {
+                        int count = 0;
+                        if (touchedSpots.isEmpty) {
+                          return [];
+                        }
+                        return touchedSpots.map((touchedSpot) {
+                          final textStyle = TextStyle(
+                            color: touchedSpot.bar.color,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          );
+                          final date = shortTimeSpan!
+                              ? DateFormat('MM-dd - HH:00').format(
+                                  DateTime.fromMillisecondsSinceEpoch(
                                       touchedSpot.x.toInt()))
-                                  : DateFormat('MM-dd-yyyy').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
+                              : DateFormat('MM-dd-yyyy').format(
+                                  DateTime.fromMillisecondsSinceEpoch(
                                       touchedSpot.x.toInt()));
-                                final value = touchedSpot.y;
+                          final value = touchedSpot.y;
 
-                                LineTooltipItem first = LineTooltipItem(
-                                  '$date\n',
-                                  TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: '$value °F',
-                                      style: textStyle,
-                                    )
-                                  ],
-                                );
+                          LineTooltipItem first = LineTooltipItem(
+                            '$date\n',
+                            TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: '$value °F',
+                                style: textStyle,
+                              )
+                            ],
+                          );
 
-                                if (count == 0) {
-                                  count++;
-                                  return first;
-                                } else {
-                                  return LineTooltipItem(
-                                    '$value °F',
-                                    textStyle,
-                                  );
-                                }
-                              }).toList();
-                            },
-                          ),
-                          touchCallback: (FlTouchEvent event,
-                              LineTouchResponse? touchResponse) {},
-                          handleBuiltInTouches: true,
-                        ),
+                          if (count == 0) {
+                            count++;
+                            return first;
+                          } else {
+                            return LineTooltipItem(
+                              '$value °F',
+                              textStyle,
+                            );
+                          }
+                        }).toList();
+                      },
+                    ),
+                    touchCallback: (FlTouchEvent event,
+                        LineTouchResponse? touchResponse) {},
+                    handleBuiltInTouches: true,
+                  ),
                 ),
               ),
             );
@@ -659,12 +712,16 @@ class _ChartmanagerState extends State<Chartmanager> {
 
   Widget windSpeedGraph() {
     return Card(
-      color: Theme.of(context).colorScheme.primary,
+      color: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       child: FutureBuilder(
         future: dataSpot('windSpeed'),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
+            return Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary));
           } else {
             double maxY = snapshot.data!
                 .map((spot) => spot.y)
@@ -763,7 +820,9 @@ class _ChartmanagerState extends State<Chartmanager> {
 
   Widget soilTempGraph() {
     return Card(
-      color: Theme.of(context).colorScheme.primary,
+      color: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       child: FutureBuilder(
         future: Future.wait([
           dataSpot('soilTemperature5'),
@@ -774,7 +833,9 @@ class _ChartmanagerState extends State<Chartmanager> {
         ]),
         builder: (context, AsyncSnapshot<List<List<FlSpot>>> snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
+            return Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary));
           } else {
             double minY = snapshot.data!
                 .expand((list) => list)
@@ -905,12 +966,12 @@ class _ChartmanagerState extends State<Chartmanager> {
                                   fontSize: 12,
                                 );
                                 final date = shortTimeSpan!
-                                  ? DateFormat('MM-dd - HH:00').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                      touchedSpot.x.toInt()))
-                                  : DateFormat('MM-dd-yyyy').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                      touchedSpot.x.toInt()));
+                                    ? DateFormat('MM-dd - HH:00').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            touchedSpot.x.toInt()))
+                                    : DateFormat('MM-dd-yyyy').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            touchedSpot.x.toInt()));
                                 final value = touchedSpot.y;
 
                                 LineTooltipItem first = LineTooltipItem(
@@ -953,11 +1014,12 @@ class _ChartmanagerState extends State<Chartmanager> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        LegendItem(color: Colors.red, text: '5 cm'),
-                        LegendItem(color: Colors.blue, text: '10 cm'),
-                        LegendItem(color: Colors.green, text: '20 cm'),
-                        LegendItem(color: Colors.orange, text: '50 cm'),
-                        LegendItem(color: Colors.purple, text: '100 cm'),
+                        if (widget.isHydromet)
+                          LegendItem(color: Colors.red, text: '2"'),
+                        LegendItem(color: Colors.blue, text: '4"'),
+                        LegendItem(color: Colors.green, text: '8"'),
+                        LegendItem(color: Colors.orange, text: '20"'),
+                        LegendItem(color: Colors.purple, text: '40"'),
                       ],
                     ),
                   ),
@@ -972,7 +1034,9 @@ class _ChartmanagerState extends State<Chartmanager> {
 
   Widget soilVWCGraph() {
     return Card(
-      color: Theme.of(context).colorScheme.primary,
+      color: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       child: FutureBuilder(
         future: Future.wait([
           dataSpot('soilVWC5'),
@@ -983,7 +1047,9 @@ class _ChartmanagerState extends State<Chartmanager> {
         ]),
         builder: (context, AsyncSnapshot<List<List<FlSpot>>> snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
+            return Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary));
           } else {
             double minY = snapshot.data!
                 .expand((list) => list)
@@ -1114,12 +1180,12 @@ class _ChartmanagerState extends State<Chartmanager> {
                                   fontSize: 12,
                                 );
                                 final date = shortTimeSpan!
-                                  ? DateFormat('MM-dd - HH:00').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                      touchedSpot.x.toInt()))
-                                  : DateFormat('MM-dd-yyyy').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                      touchedSpot.x.toInt()));
+                                    ? DateFormat('MM-dd - HH:00').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            touchedSpot.x.toInt()))
+                                    : DateFormat('MM-dd-yyyy').format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            touchedSpot.x.toInt()));
                                 final value = touchedSpot.y;
 
                                 LineTooltipItem first = LineTooltipItem(
@@ -1162,11 +1228,12 @@ class _ChartmanagerState extends State<Chartmanager> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        LegendItem(color: Colors.red, text: '5 cm'),
-                        LegendItem(color: Colors.blue, text: '10 cm'),
-                        LegendItem(color: Colors.green, text: '20 cm'),
-                        LegendItem(color: Colors.orange, text: '50 cm'),
-                        LegendItem(color: Colors.purple, text: '100 cm'),
+                        if (widget.isHydromet)
+                          LegendItem(color: Colors.red, text: '2"'),
+                        LegendItem(color: Colors.blue, text: '4"'),
+                        LegendItem(color: Colors.green, text: '8"'),
+                        LegendItem(color: Colors.orange, text: '20"'),
+                        LegendItem(color: Colors.purple, text: '40"'),
                       ],
                     ),
                   ),
@@ -1178,14 +1245,19 @@ class _ChartmanagerState extends State<Chartmanager> {
       ),
     );
   }
+
   Widget atmosphericPressureGraph() {
     return Card(
-      color: Theme.of(context).colorScheme.primary,
+      color: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       child: FutureBuilder(
         future: dataSpot('atmosphericPressure'),
         builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
+          if (!snapshot.hasData) {
+            return Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary));
           } else {
             double minY = snapshot.data!
                 .map((spot) => spot.y)
@@ -1340,12 +1412,16 @@ class _ChartmanagerState extends State<Chartmanager> {
 
   Widget precipitationGraph() {
     return Card(
-      color: Theme.of(context).colorScheme.primary,
+      color: widget.isHydromet
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.secondary,
       child: FutureBuilder(
         future: dataSpot('precipitation'),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
+            return Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary));
           } else {
             double maxY =
                 snapshot.data!.map((spot) => spot.y).reduce((a, b) => a + b);
@@ -1485,6 +1561,9 @@ class _ChartmanagerState extends State<Chartmanager> {
 
       floatingActionButton: Builder(builder: (context) {
         return FloatingActionButton(
+          backgroundColor: widget.isHydromet
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.secondaryContainer,
           onPressed: () => Scaffold.of(context).openEndDrawer(),
           child: Icon(Icons.menu),
         );

@@ -9,13 +9,17 @@ import 'JSONData.dart';
 import 'Hero_Pages/Alerts.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
 
-
 class CurrentDataPretty extends StatefulWidget {
   final String id;
   final double lat;
   final double lng;
   final bool isHydromet;
-  const CurrentDataPretty({super.key, required this.id, required this.lat, required this.lng, required this.isHydromet});
+  const CurrentDataPretty(
+      {super.key,
+      required this.id,
+      required this.lat,
+      required this.lng,
+      required this.isHydromet});
 
   @override
   State<CurrentDataPretty> createState() => _CurrentDataPrettyState();
@@ -39,16 +43,17 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
         'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}');
     _dataFuture.then((value) {
       if (!isCurrentDate(value.datetime!) && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    content: Center(
-      child: Text(
-      'Data is not up to date! Shown data is from ${DateFormat('MM/dd/yyyy').format(DateTime.fromMillisecondsSinceEpoch(value.datetime!))} which is the latest available data.',
-      textAlign: TextAlign.center,
-      ),
-    ),
-    duration: const Duration(seconds: 7),
-  ),
-  );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(
+              child: Text(
+                'Data is not up to date! Shown data is from ${DateFormat('MM/dd/yyyy').format(DateTime.fromMillisecondsSinceEpoch(value.datetime!))} which is the latest available data.',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            duration: const Duration(seconds: 7),
+          ),
+        );
       }
     });
   }
@@ -74,96 +79,97 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
     return dataList;
   }
 
-
-  bool isCurrentDate(int dateFromData){
+  bool isCurrentDate(int dateFromData) {
     DateTime now = DateTime.now();
     DateTime date = DateTime.fromMillisecondsSinceEpoch(dateFromData);
-    
-    return now.day == date.day && now.month == date.month && now.year == date.year;
+
+    return now.day == date.day &&
+        now.month == date.month &&
+        now.year == date.year;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: FutureBuilder(
         future: _dataFuture,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(child: Text('Error'));
           } else if (snapshot.hasData) {
-
             return Column(
               children: [
                 widget.isHydromet
-                ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: AspectRatio(
-                    aspectRatio: 1.75,
-                    child: Card(
-                      clipBehavior: Clip.hardEdge,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(
-                          color: Theme.of(context)
-                            .colorScheme
-                            .onPrimaryContainer,
-                          width: 1.0)),
-                      child: Stack(
-                      children: [
-                        widget.isHydromet
-                          ? PhotoPage(id: widget.id)
-                          : Container(),
-                        Positioned(
-                        left: 10,
-                        top: 0,
-                        bottom: 0,
-                        child: FadeTransition(
-                          opacity: Tween(begin: 1.0, end: 0.0).animate(
-                          CurvedAnimation(
-                            parent: _animationController,
-                            curve: Interval(0.3, 1.0,
-                              curve: Curves.easeOutBack),
-                          ),
-                          ),
-                          child: Icon(Icons.arrow_back,
-                            color: Colors.white),
-                        ),
-                        ),
-                        Positioned(
-                        right: 10,
-                        top: 0,
-                        bottom: 0,
-                        child: FadeTransition(
-                          opacity: Tween(begin: 1.0, end: 0.0).animate(
-                          CurvedAnimation(
-                            parent: _animationController,
-                            curve: Interval(0.3, 1.0,
-                              curve: Curves.easeOutBack),
-                          ),
-                          ),
-                          child: Icon(Icons.arrow_forward,
-                            color: Colors.white),
-                        ),
-                        ),
-                      ],
-                      ),
-                    ),
-                    ),
-                  )
-                  ],
-                ) 
-                : Container(),
-
-
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: AspectRatio(
+                              aspectRatio: 1.75,
+                              child: Card(
+                                clipBehavior: Clip.hardEdge,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer,
+                                        width: 1.0)),
+                                child: Stack(
+                                  children: [
+                                    widget.isHydromet
+                                        ? PhotoPage(id: widget.id)
+                                        : Container(),
+                                    Positioned(
+                                      left: 10,
+                                      top: 0,
+                                      bottom: 0,
+                                      child: FadeTransition(
+                                        opacity:
+                                            Tween(begin: 1.0, end: 0.0).animate(
+                                          CurvedAnimation(
+                                            parent: _animationController,
+                                            curve: Interval(0.3, 1.0,
+                                                curve: Curves.easeOutBack),
+                                          ),
+                                        ),
+                                        child: Icon(Icons.arrow_back,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 10,
+                                      top: 0,
+                                      bottom: 0,
+                                      child: FadeTransition(
+                                        opacity:
+                                            Tween(begin: 1.0, end: 0.0).animate(
+                                          CurvedAnimation(
+                                            parent: _animationController,
+                                            curve: Interval(0.3, 1.0,
+                                                curve: Curves.easeOutBack),
+                                          ),
+                                        ),
+                                        child: Icon(Icons.arrow_forward,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    : Container(),
                 Flexible(
                   flex: widget.isHydromet ? 1 : 1,
                   child: Card(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: widget.isHydromet
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.secondary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                         side: BorderSide(
@@ -204,7 +210,9 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                       Flexible(
                         flex: 3,
                         child: Card(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: widget.isHydromet
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.secondary,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                               side: BorderSide(
@@ -217,6 +225,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                             padding: const EdgeInsets.all(5.0),
                             child: soil_profiles(
                               data: snapshot.data!,
+                              isHydromet: widget.isHydromet,
                             ),
                           ),
                         ),
@@ -231,8 +240,13 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                   Flexible(
                                     flex: 1,
                                     child: Card(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      color: widget.isHydromet
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -250,23 +264,26 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                           )),
                                     ),
                                   ),
-
                                   Flexible(
                                     flex: 3,
                                     child: Card(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          side: BorderSide(
-                                            color: Theme.of(context)
+                                        color: widget.isHydromet
+                                            ? Theme.of(context)
                                                 .colorScheme
-                                                .onPrimaryContainer,
-                                            width: 1.0,
-                                          )),
-                                      child: Placeholder()
-                                  ),
+                                                .primary
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimaryContainer,
+                                              width: 1.0,
+                                            )),
+                                        child: Placeholder()),
                                   ),
                                 ],
                               ),
@@ -278,8 +295,13 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                   Flexible(
                                     flex: 4,
                                     child: Card(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      color: widget.isHydromet
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -292,7 +314,10 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       child: Padding(
                                         padding: const EdgeInsets.all(5.0),
                                         child: Stack(children: [
-                                          Precip(id: widget.id),
+                                          Precip(
+                                            id: widget.id,
+                                            isHydromet: widget.isHydromet,
+                                          ),
                                           Positioned(
                                             right: 40,
                                             top: 300,
@@ -319,8 +344,13 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                   Flexible(
                                     flex: 2,
                                     child: Card(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      color: widget.isHydromet
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -381,7 +411,6 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                 ),
               ],
             );
-            
           } else {
             return Center(child: const CircularProgressIndicator());
           }

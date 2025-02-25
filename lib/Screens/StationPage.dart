@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:app_001/Screens/DataPages/ChartManager.dart';
 import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
 import 'package:app_001/Screens/Forcast.dart';
 import 'package:app_001/Screens/map.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HydroStationPage extends StatefulWidget {
   final StationMarker station;
@@ -34,16 +37,16 @@ class _HydroStationPageState extends State<HydroStationPage> {
     //setting pages for viewing agrimet
     if (hydroBool == 1) {
       _pages = [
-        Forcast(lat: widget.station.lat, lng: widget.station.lon), //setting pages
+        Forcast(lat: widget.station.lat, lng: widget.station.lon,isHydromet: true,), //setting pages
         CurrentDataPretty(id: id, lat: widget.station.lat, lng: widget.station.lon, isHydromet: true),
-        Chartmanager(id: id),
+        Chartmanager(id: id,isHydromet: true,),
         //PhotoPage(id: id),
       ];
     } else {
       _pages = [
-        Forcast(lat: widget.station.lat, lng: widget.station.lon),
+        Forcast(lat: widget.station.lat, lng: widget.station.lon,isHydromet: false,),
         CurrentDataPretty(id: id, lat: widget.station.lat, lng: widget.station.lon, isHydromet: false,),
-        Chartmanager(id: id),
+        Chartmanager(id: id, isHydromet: false,),
       ];
     }
   }
@@ -60,14 +63,46 @@ void dispose() {
   super.dispose();
 }
 
+  //Create favorites json for shared preferences
+  //Need to pull the json from shared preferences, modify it and then resave
+  void createFavoritesJson() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? favoritesString = prefs.getString('favorites');
+    Map<String, dynamic> favoritesJson;
+
+    if (favoritesString != null) {
+      favoritesJson = jsonDecode(favoritesString);
+    } else {
+      favoritesJson = {'stations': []};
+    }
+
+    favoritesJson['stations'].add({
+      'name': widget.station.name,
+      'id': widget.station.id,
+      'sub_network': widget.station.subNetwork,
+      'lat': widget.station.lat,
+      'lon': widget.station.lon
+    });
+
+    prefs.setString('favorites', jsonEncode(favoritesJson));
+  }
+
+
   int _activePage = 1;
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.star),
+              onPressed: () {
+                print('Saved to favorites');
+                createFavoritesJson(); //saving to favorites
+              },
+            )
+          ],
           title: Text(
             widget.station.name,
             style: TextStyle(

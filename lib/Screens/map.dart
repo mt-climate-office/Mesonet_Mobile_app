@@ -2,9 +2,12 @@ import 'package:app_001/Screens/StationPage.dart';
 import 'package:app_001/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 
 class map extends StatefulWidget {
   const map({super.key});
@@ -40,7 +43,9 @@ class StationMarker {
 }
 
 class _mapState extends State<map> {
-
+  GeoJsonParser myGeoJson = GeoJsonParser(
+    defaultPolygonBorderColor: Colors.black12
+  );
   //Variables to control appearence of markers!
   final Icon hydrometStations = Icon(
     Icons.circle_sharp,
@@ -59,13 +64,20 @@ class _mapState extends State<map> {
   @override
   void initState() {
     super.initState();
+    
+
     getMarkers();
   }
 
   @override
   void dispose() {
     super.dispose();
+    myGeoJson.dispose();
   }
+
+  Future<String> loadgeojsonString() async {
+  return await rootBundle.loadString('lib/assets/mt_counties.geojson');
+}
 
   @pragma('vm:entry-point')
   static List<StationMarker> parseToStationMarkers(String responseBody) {
@@ -83,33 +95,31 @@ class _mapState extends State<map> {
         markers.add(Marker(
           point: LatLng(station.lat, station.lon),
           child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      HydroStationPage(station: station, hydroBool: 1),
-                ),
-              );
-            },
-            child: hydrometStations
-          ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        HydroStationPage(station: station, hydroBool: 1),
+                  ),
+                );
+              },
+              child: hydrometStations),
         ));
       } else if (!showHydroMet && station.subNetwork == "AgriMet") {
         markers.add(Marker(
           point: LatLng(station.lat, station.lon),
           child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      HydroStationPage(station: station, hydroBool: 0),
-                ),
-              );
-            },
-            child: agrimetStations
-          ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        HydroStationPage(station: station, hydroBool: 0),
+                  ),
+                );
+              },
+              child: agrimetStations),
         ));
       }
     }
@@ -130,11 +140,36 @@ class _mapState extends State<map> {
     return stationList;
   }
 
+  void loadPolygons() async {
+    String mygeoString = await loadgeojsonString();
+    myGeoJson.parseGeoJsonAsString(mygeoString); //pull from asset
+  }
+
+  List<Polygon> getPolygon() {
+    loadPolygons();
+    return myGeoJson.polygons;
+  }
+
   Future<List<Marker>> getMarkers() async {
     List<StationMarker> stationList = await getStations();
     List<Marker> markers = parseToMarkers(stationList);
 
     return markers;
+  }
+
+  Future<List<StationMarker>> getFavoriteStationList() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? jsonStringList = prefs.getStringList('favorites');
+    print(jsonStringList);
+    if (jsonStringList != null) {
+      List<StationMarker> favoriteStations = jsonStringList.map((jsonString) {
+        Map<String, dynamic> json = jsonDecode(jsonString);
+        return StationMarker.fromJson(json);
+      }).toList();
+      return favoriteStations;
+    } else {
+      return [];
+    }
   }
 
   @override
@@ -145,6 +180,26 @@ class _mapState extends State<map> {
         top: true,
         child: Scaffold(
           appBar: AppBar(
+            leading: Builder(
+              builder: (context) {
+                return Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      side: WidgetStateProperty.all(BorderSide(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          width: 1)),
+                    ),
+                    onPressed: () => Scaffold.of(context).openDrawer(),
+                    child: InkWell(
+                      splashColor: Theme.of(context).colorScheme.error,
+                      onTap: () => Scaffold.of(context).openDrawer(),
+                      child: Text('Station List'),
+                    ),
+                  ),
+                );
+              },
+            ),
             title: Image.asset(
               'lib/assets/MCO_logo.png',
               width: 120,
@@ -154,134 +209,182 @@ class _mapState extends State<map> {
             backgroundColor: Theme.of(context).colorScheme.primary,
             actions: [
               Builder(
-          builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: ElevatedButton(
-                
-                style: ButtonStyle(
-                  
-                  side: WidgetStateProperty.all(
-                BorderSide(color: Theme.of(context).colorScheme.onPrimary, width: 1)),
-                ),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-                child: InkWell(
-                  splashColor: Theme.of(context).colorScheme.error,
-                  onTap: () => Scaffold.of(context).openEndDrawer(),
-                  child: Text('Station List'),
-                ),
-              ),
-            );
-          },
+                builder: (context) {
+                  return Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        side: WidgetStateProperty.all(BorderSide(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: 1)),
+                      ),
+                      onPressed: () => Scaffold.of(context).openEndDrawer(),
+                      child: InkWell(
+                        splashColor: Theme.of(context).colorScheme.error,
+                        onTap: () => Scaffold.of(context).openEndDrawer(),
+                        child: Text('Station List'),
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
+          ),
+          drawer: Drawer(
+            child: FutureBuilder(
+                future: getFavoriteStationList(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    //print(snapshot.data);
+                    return const Center(
+                      child: Text('An error has occurred!'),
+                    );
+                  } else if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    print(snapshot.data);
+                    return ListView.builder(
+                      padding: EdgeInsets.all(10),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        StationMarker station = snapshot.data![index];
+                        return ListTile(
+                          leading: Icon(
+                            station.subNetwork == "HydroMet"
+                                ? hydrometStations.icon
+                                : agrimetStations.icon,
+                            color: station.subNetwork == "HydroMet"
+                                ? hydrometStations.color
+                                : agrimetStations.color,
+                          ),
+                          title: Text(station.name),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HydroStationPage(
+                                  station: station,
+                                  hydroBool:
+                                      station.subNetwork == "HydroMet" ? 1 : 0,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  }
+                }),
           ),
           endDrawer: Drawer(
             child: FutureBuilder(
               future: getStations(),
               builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('An error has occurred!'),
-            );
-          } else if (snapshot.hasData) {
-            List<StationMarker> stationList =
-                snapshot.data as List<StationMarker>;
-            return ListView.builder(
-                padding: EdgeInsets.all(10),
-                itemCount: stationList.length,
-                itemBuilder: (context, index) {
-            StationMarker station = stationList[index];
-            return ListTile(
-              leading: Icon(
-                station.subNetwork == "HydroMet"
-              ? hydrometStations.icon
-              : agrimetStations.icon,
-                color: station.subNetwork == "HydroMet"
-              ? hydrometStations.color
-              : agrimetStations.color,
-              ),
-              title: Text(station.name),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-              builder: (context) => HydroStationPage(
-                station: station,
-                hydroBool:
-                    station.subNetwork == "HydroMet" ? 1 : 0,
-              ),
-                  ),
-                );
-              },
-            );
-                });
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('An error has occurred!'),
+                  );
+                } else if (snapshot.hasData) {
+                  List<StationMarker> stationList =
+                      snapshot.data as List<StationMarker>;
+                  return ListView.builder(
+                      padding: EdgeInsets.all(10),
+                      itemCount: stationList.length,
+                      itemBuilder: (context, index) {
+                        StationMarker station = stationList[index];
+                        return ListTile(
+                          leading: Icon(
+                            station.subNetwork == "HydroMet"
+                                ? hydrometStations.icon
+                                : agrimetStations.icon,
+                            color: station.subNetwork == "HydroMet"
+                                ? hydrometStations.color
+                                : agrimetStations.color,
+                          ),
+                          title: Text(station.name),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HydroStationPage(
+                                  station: station,
+                                  hydroBool:
+                                      station.subNetwork == "HydroMet" ? 1 : 0,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      });
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
               },
             ),
           ),
           body: Stack(
+            
             children: [
               FutureBuilder(
-          future: getMarkers(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Center(
-                child: Text('An error has occurred!'),
-              );
-            } else if (snapshot.hasData) {
-              return FlutterMap(
-                options: MapOptions(
-            initialCenter: LatLng(46.681625, -110.04365),
-            initialZoom: 5.5,
-            keepAlive: true,
-            interactionOptions: const InteractionOptions(
-              flags:
-                  InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-            ),
-                ),
-                children: [
-            TileLayer(
-              urlTemplate:
-                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'MontanaClimateOffice.app',
-            ),
-            MarkerLayer(markers: snapshot.data as List<Marker>),
-            SimpleAttributionWidget(
-              backgroundColor: Colors.transparent,
-              source: Text('OpenStreetMap contributors'),
-            ),
-                ],
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+                future: getMarkers(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('An error has occurred!'),
+                    );
+                  } else if (snapshot.hasData) {
+                    return FlutterMap(
+                      options: MapOptions(
+                        initialCenter: LatLng(46.681625, -110.04365),
+                        initialZoom: 5.5,
+                        keepAlive: true,
+                        interactionOptions: const InteractionOptions(
+                          flags:
+                              InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                        ),
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: 'MontanaClimateOffice.app',
+                        ),
+                        PolylineLayer(polylines: myGeoJson.polylines),
+                        PolygonLayer(polygons: getPolygon()),
+                        MarkerLayer(markers: snapshot.data as List<Marker>),
+                        SimpleAttributionWidget(
+                          backgroundColor: Colors.transparent,
+                          source: Text('OpenStreetMap contributors'),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
               ),
               Positioned(
-          top: 10,
-          right: 10,
-          child: Switch(
-            value: showHydroMet,
-            onChanged: (value) {
-              setState(() {
-                showHydroMet = value;
-              });
-            },
-            activeColor: Theme.of(context).colorScheme.onPrimary,
-            activeTrackColor: hydrometStations.color,
-            inactiveThumbColor: Theme.of(context).colorScheme.onSecondary,
-            inactiveTrackColor: agrimetStations.color,
-          ),
+                top: 10,
+                right: 10,
+                child: Switch(
+                  value: showHydroMet,
+                  onChanged: (value) {
+                    setState(() {
+                      showHydroMet = value;
+                    });
+                  },
+                  activeColor: Theme.of(context).colorScheme.onPrimary,
+                  activeTrackColor: hydrometStations.color,
+                  inactiveThumbColor: Theme.of(context).colorScheme.onSecondary,
+                  inactiveTrackColor: agrimetStations.color,
+                ),
               ),
-
-              
             ],
           ),
         ),
