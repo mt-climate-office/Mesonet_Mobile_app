@@ -43,9 +43,8 @@ class StationMarker {
 }
 
 class _mapState extends State<map> {
-  GeoJsonParser myGeoJson = GeoJsonParser(
-    defaultPolygonBorderColor: Colors.black12
-  );
+  GeoJsonParser myGeoJson =
+      GeoJsonParser(defaultPolygonBorderColor: Colors.black26);
   //Variables to control appearence of markers!
   final Icon hydrometStations = Icon(
     Icons.circle_sharp,
@@ -64,20 +63,17 @@ class _mapState extends State<map> {
   @override
   void initState() {
     super.initState();
-    
-
-    getMarkers();
+    WidgetsBinding.instance.addPostFrameCallback((_) => loadPolygons());
   }
 
   @override
   void dispose() {
     super.dispose();
-    myGeoJson.dispose();
   }
 
   Future<String> loadgeojsonString() async {
-  return await rootBundle.loadString('lib/assets/mt_counties.geojson');
-}
+    return await rootBundle.loadString('lib/assets/mt_counties.geojson');
+  }
 
   @pragma('vm:entry-point')
   static List<StationMarker> parseToStationMarkers(String responseBody) {
@@ -89,6 +85,9 @@ class _mapState extends State<map> {
   }
 
   List<Marker> parseToMarkers(List<StationMarker> stationList) {
+    setState(() {  //maybe this helps by reducing the cached markers? means more rebuilds
+      
+    });
     List<Marker> markers = [];
     for (StationMarker station in stationList) {
       if (showHydroMet && station.subNetwork == "HydroMet") {
@@ -145,11 +144,6 @@ class _mapState extends State<map> {
     myGeoJson.parseGeoJsonAsString(mygeoString); //pull from asset
   }
 
-  List<Polygon> getPolygon() {
-    loadPolygons();
-    return myGeoJson.polygons;
-  }
-
   Future<List<Marker>> getMarkers() async {
     List<StationMarker> stationList = await getStations();
     List<Marker> markers = parseToMarkers(stationList);
@@ -159,17 +153,23 @@ class _mapState extends State<map> {
 
   Future<List<StationMarker>> getFavoriteStationList() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? jsonStringList = prefs.getStringList('favorites');
-    print(jsonStringList);
-    if (jsonStringList != null) {
-      List<StationMarker> favoriteStations = jsonStringList.map((jsonString) {
-        Map<String, dynamic> json = jsonDecode(jsonString);
-        return StationMarker.fromJson(json);
-      }).toList();
-      return favoriteStations;
-    } else {
-      return [];
+    String? jsonStringList = prefs.getString('favorites');
+    Map<String, dynamic> jsonMAP = jsonDecode(jsonStringList!); //no null safe
+    //print(jsonMAP['stations'][0]['name']);
+    List<StationMarker> jsonStationList = [];
+    for (int i = 0; i<(jsonMAP['stations'].length); i++){
+      jsonStationList.add(StationMarker(
+        name: jsonMAP['stations'][i]['name'], 
+        id: jsonMAP['stations'][i]['id'],  
+        subNetwork: jsonMAP['stations'][i]['sub_network'], 
+        lat: jsonMAP['stations'][i]['lat'],  
+        lon: jsonMAP['stations'][i]['lon'], )
+        );
     }
+    // setState(() {
+      
+    // });
+    return jsonStationList;
   }
 
   @override
@@ -191,11 +191,7 @@ class _mapState extends State<map> {
                           width: 1)),
                     ),
                     onPressed: () => Scaffold.of(context).openDrawer(),
-                    child: InkWell(
-                      splashColor: Theme.of(context).colorScheme.error,
-                      onTap: () => Scaffold.of(context).openDrawer(),
-                      child: Text('Station List'),
-                    ),
+                    child: Center(child: Text('Favorite Stations'),)
                   ),
                 );
               },
@@ -203,7 +199,7 @@ class _mapState extends State<map> {
             title: Image.asset(
               'lib/assets/MCO_logo.png',
               width: 120,
-              height: 60,
+              height: 70,
               fit: BoxFit.contain,
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -244,13 +240,20 @@ class _mapState extends State<map> {
                       child: CircularProgressIndicator(),
                     );
                   } else {
-                    print(snapshot.data);
+
+                    List<StationMarker> stationList =
+                      snapshot.data as List<StationMarker>;
+
+                   // print(snapshot.data);
+
+
                     return ListView.builder(
-                      padding: EdgeInsets.all(10),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        StationMarker station = snapshot.data![index];
-                        return ListTile(
+                        padding: EdgeInsets.all(10),
+                        itemCount: stationList.length,
+                        itemBuilder: (context, index) {
+                          StationMarker station = stationList[index];
+
+                          return ListTile(
                           leading: Icon(
                             station.subNetwork == "HydroMet"
                                 ? hydrometStations.icon
@@ -273,8 +276,7 @@ class _mapState extends State<map> {
                             );
                           },
                         );
-                      },
-                    );
+                        });
                   }
                 }),
           ),
@@ -327,7 +329,6 @@ class _mapState extends State<map> {
             ),
           ),
           body: Stack(
-            
             children: [
               FutureBuilder(
                 future: getMarkers(),
@@ -353,8 +354,7 @@ class _mapState extends State<map> {
                               'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                           userAgentPackageName: 'MontanaClimateOffice.app',
                         ),
-                        PolylineLayer(polylines: myGeoJson.polylines),
-                        PolygonLayer(polygons: getPolygon()),
+                        PolygonLayer(polygons: myGeoJson.polygons),
                         MarkerLayer(markers: snapshot.data as List<Marker>),
                         SimpleAttributionWidget(
                           backgroundColor: Colors.transparent,

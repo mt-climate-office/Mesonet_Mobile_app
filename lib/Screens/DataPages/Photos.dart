@@ -15,6 +15,7 @@ class _PhotoPageState extends State<PhotoPage> {
     return ListView(
       scrollDirection: Axis.horizontal,
       physics: PageScrollPhysics(),
+      shrinkWrap: true,
       children: [
         Image.network(
             'https://mesonet.climate.umt.edu/api/v2/photos/${widget.id}/n/?force=True',

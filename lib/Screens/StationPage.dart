@@ -17,8 +17,6 @@ class HydroStationPage extends StatefulWidget {
   State<HydroStationPage> createState() => _HydroStationPageState();
 }
 
-
-
 class _HydroStationPageState extends State<HydroStationPage> {
   late List<Widget> _pages;
 
@@ -37,31 +35,54 @@ class _HydroStationPageState extends State<HydroStationPage> {
     //setting pages for viewing agrimet
     if (hydroBool == 1) {
       _pages = [
-        Forcast(lat: widget.station.lat, lng: widget.station.lon,isHydromet: true,), //setting pages
-        CurrentDataPretty(id: id, lat: widget.station.lat, lng: widget.station.lon, isHydromet: true),
-        Chartmanager(id: id,isHydromet: true,),
+        Forcast(
+          lat: widget.station.lat,
+          lng: widget.station.lon,
+          isHydromet: true,
+        ), //setting pages
+        CurrentDataPretty(
+            id: id,
+            lat: widget.station.lat,
+            lng: widget.station.lon,
+            isHydromet: true),
+        Chartmanager(
+          id: id,
+          isHydromet: true,
+        ),
         //PhotoPage(id: id),
       ];
     } else {
       _pages = [
-        Forcast(lat: widget.station.lat, lng: widget.station.lon,isHydromet: false,),
-        CurrentDataPretty(id: id, lat: widget.station.lat, lng: widget.station.lon, isHydromet: false,),
-        Chartmanager(id: id, isHydromet: false,),
+        Forcast(
+          lat: widget.station.lat,
+          lng: widget.station.lon,
+          isHydromet: false,
+        ),
+        CurrentDataPretty(
+          id: id,
+          lat: widget.station.lat,
+          lng: widget.station.lon,
+          isHydromet: false,
+        ),
+        Chartmanager(
+          id: id,
+          isHydromet: false,
+        ),
       ];
     }
   }
 
   final _pageController = PageController(
-    initialPage: 1, //initial page for the marker. index starts at 0 and follows the lists above. Don't index out of range for the shorter list
+    initialPage:
+        1, //initial page for the marker. index starts at 0 and follows the lists above. Don't index out of range for the shorter list
     viewportFraction: 1,
   );
 
-
   @override
-void dispose() {
-  _pageController.dispose();
-  super.dispose();
-}
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   //Create favorites json for shared preferences
   //Need to pull the json from shared preferences, modify it and then resave
@@ -76,17 +97,37 @@ void dispose() {
       favoritesJson = {'stations': []};
     }
 
-    favoritesJson['stations'].add({
-      'name': widget.station.name,
-      'id': widget.station.id,
-      'sub_network': widget.station.subNetwork,
-      'lat': widget.station.lat,
-      'lon': widget.station.lon
+    bool remove = false;
+
+  //  print('Full Map: ${favoritesJson['stations'][0]}');
+    for (int i = 0; i < favoritesJson['stations'].length; i++) {
+      favoritesJson['stations'][i].forEach((key, value) {
+        //check for id in all stations
+        if (value == widget.station.id) {
+          remove = true;
+        }
+      });
+    }
+
+    if (remove) {
+      favoritesJson['stations'].removeWhere((element) =>
+          element['id'] ==
+          widget.station.id); //remove everywhere we find the id
+    } else {
+      favoritesJson['stations'].add({
+        'name': widget.station.name,
+        'id': widget.station.id,
+        'sub_network': widget.station.subNetwork,
+        'lat': widget.station.lat,
+        'lon': widget.station.lon
+      });
+    }
+
+    setState(() {
+      prefs.setString('favorites', jsonEncode(favoritesJson));
     });
-
-    prefs.setString('favorites', jsonEncode(favoritesJson));
+    
   }
-
 
   int _activePage = 1;
 
@@ -98,7 +139,6 @@ void dispose() {
             IconButton(
               icon: Icon(Icons.star),
               onPressed: () {
-                print('Saved to favorites');
                 createFavoritesJson(); //saving to favorites
               },
             )
@@ -168,4 +208,3 @@ void dispose() {
         ));
   }
 }
-
