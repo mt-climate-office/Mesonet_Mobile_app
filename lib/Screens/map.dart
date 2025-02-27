@@ -85,9 +85,6 @@ class _mapState extends State<map> {
   }
 
   List<Marker> parseToMarkers(List<StationMarker> stationList) {
-    setState(() {  //maybe this helps by reducing the cached markers? means more rebuilds
-      
-    });
     List<Marker> markers = [];
     for (StationMarker station in stationList) {
       if (showHydroMet && station.subNetwork == "HydroMet") {
@@ -131,7 +128,9 @@ class _mapState extends State<map> {
     try {
       response = await compute(apiCall, url);
     } catch (e) {
-      print('Error: $e');
+      if (kDebugMode) {
+        print('Error: $e');
+      }
     }
 
     final List<StationMarker> stationList =
@@ -334,8 +333,14 @@ class _mapState extends State<map> {
                 future: getMarkers(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('An error has occurred!'),
+                    return Center(
+                      child: ElevatedButton(
+                        onPressed: (){
+                          setState(() {
+                            
+                          });
+                        }, 
+                        child: Text('Refresh')),
                     );
                   } else if (snapshot.hasData) {
                     return FlutterMap(
