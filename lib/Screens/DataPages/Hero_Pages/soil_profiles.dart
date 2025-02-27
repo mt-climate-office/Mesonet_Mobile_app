@@ -23,11 +23,11 @@ class _soil_profilesState extends State<soil_profiles> {
 
   List<double> getTempRange() {
     List<double> range = [
-      (widget.data.soilTemperature5 ?? 0),
-      (widget.data.soilTemperature10 ?? 0),
-      (widget.data.soilTemperature20 ?? 0),
-      (widget.data.soilTemperature50 ?? 0),
-      (widget.data.soilTemperature100 ?? 0),
+      widget.data.soilTemperature5 ?? 0.0,
+      widget.data.soilTemperature10 ?? 0.0,
+      widget.data.soilTemperature20 ?? 0.0,
+      widget.data.soilTemperature50 ?? 0.0,
+      widget.data.soilTemperature100 ?? 0.0,
     ];
 
     return [range.reduce(max) + 5 , range.reduce(min) - 5];
@@ -93,255 +93,131 @@ class _soil_profilesState extends State<soil_profiles> {
 
   @override
   Widget build(BuildContext context) {
-    
-    return 
-    
-    widget.isHydromet
-    ?
+    return Column(
+      children: [
+        //Text at the top of the card
+        Text(
+          'Soil Profiles',
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryFixed),
+        ),
+        //=================================================================
+        Expanded(
+            child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Flexible(
+                flex: 2,
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                verticalDirection: VerticalDirection.up,
+                children: [
+                  Text('40"', style: TextStyle(fontWeight: FontWeight.w500)),
+                  Text('20"', style: TextStyle(fontWeight: FontWeight.w500)),
+                  Text(' 8"', style: TextStyle(fontWeight: FontWeight.w500)),
+                  Text(' 4"', style: TextStyle(fontWeight: FontWeight.w500)),
+                  Text(' 2"', style: TextStyle(fontWeight: FontWeight.w500)),
+                ],
+              )),
+              Flexible(
+                flex: 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
+                    child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                    Expanded(
+                        child: Container(
+                          color: getGradientColors(
+                          widget.data.soilTemperature5?? 999.99, true),
+                          child: Center(child: Text('${widget.data.soilTemperature5.toString()}°F',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilTemperature10?? 999.99, true),
+                          child: Center(child: Text('${widget.data.soilTemperature10.toString()}°F',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilTemperature20?? 999.99, true),
+                          child: Center(child: Text('${widget.data.soilTemperature20.toString()}°F',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilTemperature50?? 999.99, true),
+                          child: Center(child: Text('${widget.data.soilTemperature50.toString()}°F',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilTemperature100?? 999.99, true),
+                          child: Center(child: Text('${widget.data.soilTemperature100.toString()}°F',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                                    ],
+                                  ),
+                  )),
+              
+              Flexible(
+                flex: 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
+                    child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilVWC5?? 999.99, false),
+                          child: Center(child: Text('${widget.data.soilVWC5.toString()}%',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilVWC10?? 999.99, false),
+                          child: Center(child: Text('${widget.data.soilVWC10.toString()}%',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilVWC20?? 999.99, false),
+                          child: Center(child: Text('${widget.data.soilVWC20.toString()}%',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilVWC50?? 999.99, false),
+                          child: Center(child: Text('${widget.data.soilVWC50.toString()}%',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                    Expanded(
+                        child: Container(
+                      color: getGradientColors(
+                          widget.data.soilVWC100?? 999.99, false),
+                          child: Center(child: Text('${widget.data.soilVWC100.toString()}%',
+                          style: TextStyle(fontSize: 10),),),
+                    )),
+                                    ],
+                                  ),
+                  )),
 
-    Container(
-      color: Theme.of(context).colorScheme.primary,
-      child: Column(  //Hydromet has 5 measurements, agrimet has 4
-      
-        children: [
-          //Text at the top of the card
-          Text(
-            'Soil Profiles',
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryFixed),
+            ],
           ),
-          //=================================================================
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Flexible(
-                  flex: 2,
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  verticalDirection: VerticalDirection.up,
-                  children: [
-                    Text('40"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                    Text('20"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                    Text(' 8"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                    Text(' 4"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                    Text(' 2"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                  ],
-                )),
-                Flexible(
-                  flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
-                      child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                      Expanded(
-                          child: Container(
-                            color: getGradientColors(
-                              (widget.data.soilTemperature5 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature5 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature5 ?? 0).toStringAsFixed(2)}°F',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilTemperature10 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature10 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature10 ?? 0).toStringAsFixed(2)}°F',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilTemperature20 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature20 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature20 ?? 0).toStringAsFixed(2)}°F',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilTemperature50 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature50 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature50 ?? 0).toStringAsFixed(2)}°F',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilTemperature100 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature100 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature100 ?? 0).toStringAsFixed(2)}°F',
-                            style: TextStyle(fontSize: 10),),),
-                      )),
-                                      ],
-                                    ),
-                    )),
-                
-                Flexible(
-                  flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
-                      child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                      Expanded(
-                          child: Container(
-                        color: getGradientColors(
-                              (widget.data.soilVWC5 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC5 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilVWC10 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC10 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilVWC20 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC20 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilVWC50 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC50 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilVWC100 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC100 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                      )),
-                                      ],
-                                    ),
-                    )),
-      
-              ],
-            ),
-          ))
-        ],
-      ),
-    )
-    : Container(
-      color: Theme.of(context).colorScheme.secondary,
-      child: Column(
-        children: [
-          //Text at the top of the card
-          Text(
-            'Soil Profiles',
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryFixed),
-          ),
-          //=================================================================
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Flexible(
-                  flex: 2,
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  verticalDirection: VerticalDirection.up,
-                  children: [
-                    Text('40"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                    Text('20"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                    Text(' 8"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                    Text(' 4"', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,fontWeight: FontWeight.w500)),
-                  ],
-                )),
-                Flexible(
-                  flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
-                      child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilTemperature10 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature10 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature10 ?? 0).toStringAsFixed(2)}°F',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilTemperature20 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature20 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature20 ?? 0).toStringAsFixed(2)}°F',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilTemperature50 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature50 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature50 ?? 0).toStringAsFixed(2)}°F',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilTemperature100 ?? 0), true),
-                              child: Center(child: Text('${(widget.data.soilTemperature100 ?? 'No Data') is String ? 'No Data' : (widget.data.soilTemperature100 ?? 0).toStringAsFixed(2)}°F',
-                            style: TextStyle(fontSize: 10),),),
-                      )),
-                                      ],
-                                    ),
-                    )),
-                
-                Flexible(
-                  flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
-                      child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilVWC10 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC10 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilVWC20 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC20 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilVWC50 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC50 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                            )),
-                            Expanded(
-                              child: Container(
-                              color: getGradientColors(
-                              (widget.data.soilVWC100 ?? 0), false),
-                              child: Center(child: Text('${widget.data.soilVWC100 ?? 'No Data'}%',
-                              style: TextStyle(fontSize: 10),),),
-                      )),
-                                      ],
-                                    ),
-                    )),
-      
-              ],
-            ),
-          ))
-        ],
-      ),
+        ))
+      ],
     );
   }
 }
