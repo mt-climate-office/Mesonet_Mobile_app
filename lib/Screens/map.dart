@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:app_001/Screens/StationPage.dart';
 import 'package:app_001/main.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +24,8 @@ class StationMarker {
   final String subNetwork;
   final double lat;
   final double lon;
+  final double? air_temp;
+  final double? precipSummary;
 
   const StationMarker({
     required this.name,
@@ -29,8 +33,12 @@ class StationMarker {
     required this.subNetwork,
     required this.lat,
     required this.lon,
+    required this.air_temp,
+    required this.precipSummary,  //agrimet does not have precip summary yet!
   });
 
+  //Use type casting as a saftey check
+  //agrimet does not have precip summary, so have to check in factory
   factory StationMarker.fromJson(Map<String, dynamic> json) {
     return StationMarker(
       name: json['name'] as String,
@@ -38,39 +46,53 @@ class StationMarker {
       subNetwork: json['sub_network'] as String,
       lat: json['latitude'] as double,
       lon: json['longitude'] as double,
+      air_temp: json['Air Temperature [°F]'] as double,
+      precipSummary: json['7-Day Precipitation [in]'],
     );
   }
 }
 
 class _mapState extends State<map> {
+  late double _markerSize;
+  late MapController mapController;
+  late Icon hydrometStations;
+  late Icon agrimetStations;
   GeoJsonParser myGeoJson =
       GeoJsonParser(defaultPolygonBorderColor: Colors.black26);
-  //Variables to control appearence of markers!
-  final Icon hydrometStations = Icon(
-    Icons.circle_sharp,
-    color: Color.fromARGB(255, 14, 70, 116),
-  );
-
-  Icon agrimetStations = Icon(
-    Icons.star,
-    color: Color.fromARGB(255, 46, 155, 18),
-  );
-
-  // Finish
-
   bool showHydroMet = true;
 
+
+  //Defaults are set in initState 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => loadPolygons());
+
+    mapController = MapController();
+    _markerSize = 16.0; // Default marker size
+
+    hydrometStations = Icon(
+      Icons.circle_sharp,
+      color: Color.fromARGB(255, 14, 70, 116),
+      size: _markerSize,
+    );
+
+    agrimetStations = Icon(
+      Icons.star,
+      color: Color.fromARGB(255, 46, 155, 18),
+      size: _markerSize,
+    );
+
+    getFavoriteStationList();
   }
 
   @override
   void dispose() {
+    mapController.dispose();
     super.dispose();
   }
 
+  
   Future<String> loadgeojsonString() async {
     return await rootBundle.loadString('lib/assets/mt_counties.geojson');
   }
@@ -89,6 +111,8 @@ class _mapState extends State<map> {
     for (StationMarker station in stationList) {
       if (showHydroMet && station.subNetwork == "HydroMet") {
         markers.add(Marker(
+          height: _markerSize,
+          width: _markerSize,
           point: LatLng(station.lat, station.lon),
           child: GestureDetector(
               onTap: () {
@@ -105,6 +129,8 @@ class _mapState extends State<map> {
       } else if (!showHydroMet && station.subNetwork == "AgriMet") {
         markers.add(Marker(
           point: LatLng(station.lat, station.lon),
+          height: _markerSize,
+          width: _markerSize,
           child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -123,7 +149,7 @@ class _mapState extends State<map> {
   }
 
   Future<List<StationMarker>> getStations() async {
-    String url = 'https://mesonet.climate.umt.edu/api/v2/stations/?type=json';
+    String url = 'https://mesonet.climate.umt.edu/api/v2/app/?type=json';
     String response = '';
     try {
       response = await compute(apiCall, url);
@@ -146,7 +172,7 @@ class _mapState extends State<map> {
   Future<List<Marker>> getMarkers() async {
     List<StationMarker> stationList = await getStations();
     List<Marker> markers = parseToMarkers(stationList);
-
+    //List<Marker> markers = await compute(parseToMarkers, stationList);
     return markers;
   }
 
@@ -156,19 +182,33 @@ class _mapState extends State<map> {
     Map<String, dynamic> jsonMAP = jsonDecode(jsonStringList!); //no null safe
     //print(jsonMAP['stations'][0]['name']);
     List<StationMarker> jsonStationList = [];
-    for (int i = 0; i<(jsonMAP['stations'].length); i++){
+    for (int i = 0; i < (jsonMAP['stations'].length); i++) {
       jsonStationList.add(StationMarker(
-        name: jsonMAP['stations'][i]['name'], 
-        id: jsonMAP['stations'][i]['id'],  
-        subNetwork: jsonMAP['stations'][i]['sub_network'], 
-        lat: jsonMAP['stations'][i]['lat'],  
-        lon: jsonMAP['stations'][i]['lon'], )
-        );
+        name: jsonMAP['stations'][i]['name'],
+        id: jsonMAP['stations'][i]['id'],
+        subNetwork: jsonMAP['stations'][i]['sub_network'],
+        lat: jsonMAP['stations'][i]['lat'],
+        lon: jsonMAP['stations'][i]['lon'],
+        air_temp: jsonMAP['stations'][i]['air_temp'],
+        precipSummary: jsonMAP['stations'][i]['precipSummary'],
+      ));
     }
     // setState(() {
-      
+
     // });
     return jsonStationList;
+  }
+
+  void _updateMarkerSize(double zoom) {
+    if (zoom > 6.4) {
+      setState(() {
+        _markerSize = 100.0 * (zoom / 13.0);
+      });
+    } else {
+      setState(() {
+        _markerSize = 25;
+      });
+    }
   }
 
   @override
@@ -184,14 +224,17 @@ class _mapState extends State<map> {
                 return Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: ElevatedButton(
-                    style: ButtonStyle(
-                      side: WidgetStateProperty.all(BorderSide(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          width: 1)),
-                    ),
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    child: Center(child: Text('Favorite Stations'),)
-                  ),
+                      style: ButtonStyle(
+                        side: WidgetStateProperty.all(BorderSide(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: 1)),
+                      ),
+                      onPressed: () => setState(() {
+                        Scaffold.of(context).openDrawer();
+                      }),
+                      child: Center(
+                        child: Text('Favorite Stations'),
+                      )),
                 );
               },
             ),
@@ -239,12 +282,10 @@ class _mapState extends State<map> {
                       child: CircularProgressIndicator(),
                     );
                   } else {
-
                     List<StationMarker> stationList =
-                      snapshot.data as List<StationMarker>;
+                        snapshot.data as List<StationMarker>;
 
-                   // print(snapshot.data);
-
+                    // print(snapshot.data);
 
                     return ListView.builder(
                         padding: EdgeInsets.all(10),
@@ -253,28 +294,29 @@ class _mapState extends State<map> {
                           StationMarker station = stationList[index];
 
                           return ListTile(
-                          leading: Icon(
-                            station.subNetwork == "HydroMet"
-                                ? hydrometStations.icon
-                                : agrimetStations.icon,
-                            color: station.subNetwork == "HydroMet"
-                                ? hydrometStations.color
-                                : agrimetStations.color,
-                          ),
-                          title: Text(station.name),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HydroStationPage(
-                                  station: station,
-                                  hydroBool:
-                                      station.subNetwork == "HydroMet" ? 1 : 0,
+                            leading: Icon(
+                              station.subNetwork == "HydroMet"
+                                  ? hydrometStations.icon
+                                  : agrimetStations.icon,
+                              color: station.subNetwork == "HydroMet"
+                                  ? hydrometStations.color
+                                  : agrimetStations.color,
+                            ),
+                            title: Text(station.name),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HydroStationPage(
+                                    station: station,
+                                    hydroBool: station.subNetwork == "HydroMet"
+                                        ? 1
+                                        : 0,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
+                              );
+                            },
+                          );
                         });
                   }
                 }),
@@ -335,15 +377,14 @@ class _mapState extends State<map> {
                   if (snapshot.hasError) {
                     return Center(
                       child: ElevatedButton(
-                        onPressed: (){
-                          setState(() {
-                            
-                          });
-                        }, 
-                        child: Text('Refresh')),
+                          onPressed: () {
+                            setState(() {});
+                          },
+                          child: Text('Refresh')),
                     );
                   } else if (snapshot.hasData) {
                     return FlutterMap(
+                      mapController: mapController,
                       options: MapOptions(
                         initialCenter: LatLng(46.681625, -110.04365),
                         initialZoom: 5.5,
@@ -352,6 +393,11 @@ class _mapState extends State<map> {
                           flags:
                               InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                         ),
+                        onPositionChanged: (position, hasGesture) {
+                          if (hasGesture) {
+                            _updateMarkerSize(position.zoom);
+                          }
+                        },
                       ),
                       children: [
                         TileLayer(
