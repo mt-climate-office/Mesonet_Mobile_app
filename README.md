@@ -8,10 +8,9 @@ Data from the Montana Climate Office's Agrimet network is also displayed
 All major code is found under the lib folder.
 Screens manages all viewable pages, DataPage holds all secondary data pages resulting from selecting a station.
 
-<div class="grid cards" markdown>
   
-![Water_Gradient](https://github.com/user-attachments/assets/79eef345-d9a0-428e-9dfb-d5c59ebdabb7)
 
-![Temp_gradient2](https://github.com/user-attachments/assets/bffee706-2633-43ec-8b24-4b00065cf428)
 
-</div>
+
+| ![Water_Gradient](https://github.com/user-attachments/assets/79eef345-d9a0-428e-9dfb-d5c59ebdabb7)| ![Temp_gradient2](https://github.com/user-attachments/assets/bffee706-2633-43ec-8b24-4b00065cf428) |
+| -------------- | --------------- |
