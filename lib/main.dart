@@ -2,6 +2,7 @@ import 'package:app_001/Screens/HomeManager.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+
 /*App for the montana climate office
   Built by Jim Seielstad
 
@@ -29,32 +30,43 @@ DOCS: Setting light and dark color schemes for the app.
       Adjust colors below*/
 
 const ColorScheme lightColorScheme = ColorScheme(
-    primary: Color.fromARGB(255, 70, 183, 218),
-    onPrimary: Colors.black,
+    primary: Color(0xff0073A2),
+    onPrimary: Colors.white70,
+    primaryContainer: Color(0xff8FD1E9),
+    onPrimaryContainer: Colors.black54,
+    onPrimaryFixed: Colors.white,
 
-    secondary: Color.fromARGB(255, 141, 145, 145),
-    onSecondary: Color(0xFF322942),
+    secondary: Color(0xff40826D),
+    onSecondary: Colors.white70,
+    secondaryContainer: Color(0xff9FD3BF),
+    onSecondaryContainer: Colors.black54,
 
     error: Colors.redAccent,
     onError: Colors.white,
 
-    surface: Color.fromARGB(255, 182, 182, 182),
-    onSurface: Color(0xFF241E30),
+    surface: Color(0xffcbcbcb),
+    onSurface: Colors.black54,
 
     brightness: Brightness.light,
   );
-const ColorScheme darkColorScheme = ColorScheme(
-    primary: Color.fromARGB(255, 14, 70, 116),
-    onPrimary: Colors.white,
 
-    secondary: Color.fromARGB(255, 99, 102, 102),
-    onSecondary: Colors.white,
+const ColorScheme darkColorScheme = ColorScheme(
+    primary: Color(0xff0073A2),
+    onPrimary: Colors.white70,
+    primaryContainer: Color(0xff8FD1E9),
+    onPrimaryContainer: Colors.black54,
+    onPrimaryFixed: Colors.white,
+
+    secondary: Color(0xff40826D),
+    onSecondary: Colors.white70,
+    secondaryContainer: Color(0xff9FD3BF),
+    onSecondaryContainer: Colors.black54,
 
     error: Colors.redAccent,
     onError: Colors.white,
 
-    surface: Color.fromARGB(255, 158, 160, 160),
-    onSurface: Colors.black,
+    surface: Color.fromARGB(255, 150, 150, 150),
+    onSurface: Colors.black87,
     
     brightness: Brightness.dark,
   );

@@ -7,16 +7,21 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
-  fl_chart: ^0.69.2
+  fl_chart: ^0.70.2
   flutter:
     sdk: flutter
   flutter_isolate: ^2.1.0
+  shared_preferences: ^2.0.13
   flutter_map: ^7.0.2
+  flutter_map_geojson: ^1.0.8
   gradient_icon: ^2.0.9
   http: ^1.2.2
   intl: ^0.20.1
   latlong2: ^0.9.1
+  permission_handler: ^11.3.1
+  rainbow_color: ^2.0.1
   transparent_image: ^2.0.1
+  weather_icons: ^3.0.0
 
 dev_dependencies:
   flutter_test:
